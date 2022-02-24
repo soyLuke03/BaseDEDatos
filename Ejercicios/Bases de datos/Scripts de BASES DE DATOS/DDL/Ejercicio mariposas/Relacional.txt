@@ -1,0 +1,60 @@
+familia (#nombre,caracteristicas)
+nombre varchar2 
+caracteristicas varchar2
+	PK(nombre)
+
+genero (#nombre,caracteristicas,nombre_familia)
+nombre varchar2
+caracteristicas varchar2
+nombre_familia varchar2 
+	PK(nombre)
+	FK(nombre_familia) references familia(nombre)
+
+especie(#nombre,caracteristicas,nombre_genero)
+nombre varchar2
+caracteristicas varchar2
+nombre_genero varchar2 
+	PK(nombre)
+	FK(nombre_genero) references genero(nombre)
+
+zona(#nombre,localidad,extension,protegida)
+nombre varchar2
+localidad varchar2
+extension number
+protegida varchar2 
+	PK(nombre)
+
+persona(#dni,nombre,direccion,telefono,usuario)
+dni varchar2
+nombre varchar2
+direccion varchar2
+telefono number
+usuario varchar2
+	PK(dni)
+
+coleccion(#dni_persona,nEjemplares,precio)
+dni_persona varchar2
+nEjemplares number
+precio number
+	PK(dni_persona)
+	FK(dni_persona) references persona(dni)
+
+ejemplar_mariposa(#horaCaptura,#fechaCaptura,nombre,fecha_coleccion,dni_coleccion,nombreComun,precioEjemplar,nombre_zona,dni) 
+horaCaptura date
+fechaCaptura date
+nombre varchar2
+nombreComun varchar2
+precioEjemplar number
+nombre_zona varchar2
+fecha_Coleccion date
+dni_coleccion varchar2
+	PK(horaCaptura,fechaCaptura)
+	FK(nombre) references especie(nombre)
+	FK(nombre_zona) references zona(nombre)
+	FK(dni) references persona(dni)
+	fK(dni_coleccion) references coleccion(dni)
+
+
+1º forma normal se cumple
+2º forma normal se cumple
+3º forma normal se cumple

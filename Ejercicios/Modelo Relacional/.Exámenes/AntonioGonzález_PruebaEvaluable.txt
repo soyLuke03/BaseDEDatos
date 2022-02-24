@@ -1,0 +1,58 @@
+Cliente (#DNI, Direccion, Telefono, Nombre, Apellidos) siendo
+	DNI es cadena no nulo
+	Direccion es cadena
+	Telefono es entero
+	Nombre es cadena no nulo
+	Apellidos es cadena no nulo
+		PK (DNI)
+		
+
+Coche (#Matricula, Marca, Modelo, Color, DNI) siendo
+	Matricula es cadena no nulo
+	Marca es cadena no nulo
+	Modelo es cadena
+	Color es cadena
+	DNI es cadena no nulo
+		PK (Matricula)
+		FK (DNI/CLIENTE(DNI))
+
+
+Mecanico (#DNI, Nombre, Apellidos, FechaContratacion, Salario) siendo
+	DNI es cadena no nulo
+	Nombre es cadena
+	Apellidos es cadena
+	FechaContratacion es entero no nulo
+	Salario es entero 
+		PK (DNI)
+		
+
+Repara (#DNI, #Matricula, #FechaReparacion, Horas) siendo
+	DNI es cadena no nulo
+	Matricula es cadena no nulo
+	FechaReparacion es entero
+	Horas es entero
+		PK (DNI, Matricula, FechaReparacion)
+		FK (DNI/MECANICO(DNI), Matricula/COCHE(Matricula))
+
+
+CocheNuevo (#Matricula, Unidades) siendo
+	Matricula es cadena no nulo
+	Unidades es entero
+		PK (Matricula)
+		FK (Matricula/COCHE(Matricula))
+
+
+CocheUsado (#Matricula, Kilometros) siendo
+	Matricula es cadena no nulo
+	Kilometros es entero
+		PK (Matricula)
+		FK (Matricula/COCHE(Matricula))
+
+
+Compra (DNI, #Matricula) siendo
+	DNI es cadena no nulo
+	Matricula es cadena no nulo
+		PK (Matricula)
+		FK (DNI/CLIENTE(DNI), Matricula/COCHE(Matricula))
+
+

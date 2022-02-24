@@ -1,0 +1,26 @@
+Región (#Nombre_Región) siendo
+	Nombre_Región es cadena no nulo
+		PK (Nombre_Región)
+
+Provincia (#Código_Provincia, Nombre_Provincia, Nombre_Región) siendo
+	Código_Provincia es entero no nulo
+	Nombre_Provincia es cadena no nulo
+		PK (Código_Región)
+		FK (Nombre_Región/REGIÓN(Nombre_Región))
+
+
+Localidad (#Código_Localidad, Nombre, Código_Provincia) siendo
+	Nombre es cadena no nulo
+	Código_Localidad no nulo
+		PK (Código_Localidad)
+		FK (Código_Provincia/PROVINCIA(Código_Provincia))
+
+
+Empleado (#Id_E, DNI_E, Nombre, Teléfono, Salario, Código_Localidad) siendo
+	Id_E es entero no nulo
+	DNI_E es cadena no nulo
+	Nombre es cadena
+	Teléfono es entero
+	Sañario es entero
+		PK (Id_E)
+		FK (Código_Localidad/LOCALIDAD(Código_Localidad))

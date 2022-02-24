@@ -1,0 +1,27 @@
+D. de empresa (#Codigo, Nombre) siendo
+	Codigo es entero no nulo
+	Nombre es cadena
+		PK (Codigo)
+
+Empleado (#NIF, Nombre, Apellidos, FechaDeNacimiento, Telefono, Titulacion, Codigo) siendo
+	NIF es entero no nulo
+	Nombre es cadena
+	Apellidos es cadena
+	FechaDeNacimiento es entero
+	Telefono es entero
+	Titulacion es cadena
+		PK (NIF)
+		FK (Codigo/D.DE EMPPRESA(Codigo))
+
+Proyecto (#Codigo, Descripcion) siendo
+	Codigo es entero no nulo
+	Descripcion es cadena
+		PK (Codigo)
+
+Trabaja (#Codigo, #NIF, #FechaDeIncorporacion, FuncionesDeCoordinacion) siendo
+	Codigo es entero no nulo
+	NIF es entero no nulo
+	FechaDeIncorporacion es entero no nulo
+	FuncionesDeCoordinacion es cadena
+		PK (Codigo, NIF, FechaDeIncorporacion)
+		FK (NIF/EMPLEADO(NIF), Codigo/PROYECTO(Codigo))

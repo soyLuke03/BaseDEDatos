@@ -1,0 +1,65 @@
+Agencia (#ZonaActuacion, Fax, Direccion, CodigoEmpleado) siendo
+	ZonaActuacion es cadena no nulo
+	Fax es entero no nulo
+	Direccion es cadena 
+	CodigoEmpleado es entero no nulo
+		PK (ZonaActuacion)
+		FK (CodigoEmpleado/EMPLEADO(CodigoEmpleado))
+
+
+Telefono (#NºTelefono, ZonaActuacion) siendo
+	NºTelefono es entero no nulo
+	ZonaActuacion es cadena
+		PK (NºTelefono)
+		FK (ZonaActuacion/AGENCIA(ZonaActuacion))
+	
+
+
+Inmueble (#Codigo, Propietario, Direccion, Superficie, PrecioAlquiler, Fianza, PrecioVenta, Hipoteca, ZonaActuacion) siendo 
+	Codigo es cadena no nulo
+	Propietario es cadena no nulo
+	Direccion es cadena
+	Superficie es entero
+	PrecioAlquiler es entero
+	Fianza es entero
+	PrecioVenta es entero
+	Hipoteca es booleano
+		PK (Codigo)
+		FK (PrecioAlquiler/ALQUILA(PrecioAlquiler), ZonaActuacion/AGENCIA(ZonaActuacion))
+
+
+Local (#Codigo, LicenciaApertura) siendo
+	Codigo es cadena no nulo
+	LicenciaApertura es booleano
+		PK (Codigo)
+		FK (Codigo/INMUEBLE(Codigo))
+
+
+Piso (#Codigo, Habitaciones, CuartosDeBaño, TipoGas, TipoPiso) siendo
+	Codigo es cadena no nulo
+	Habitaciones es entero no nulo
+	CuartosDeBaño es entero no nulo
+	TipoGas es cadena no nulo
+	TipoPiso es cadena no nulo
+		PK (Codigo)
+		FK (Codigo/INMUEBLE(Codigo))
+
+
+Titular (#Codigo, Nombre, Telefono, FechaNacimiento, Titulacion) siendo
+	Codigo es cadena no nulo
+	Nombre es cadena
+	Telefono es entero
+	FechaNacimiento es entero
+	Titulacion es cadena no nulo
+		PK (Codigo)
+		FK (Codigo/EMPLEADO(Codigo), Nombre/EMPLEADO(Nombre), Telefono/EMPLEADO(Telefono), FechaNacimiento/EMPLEADO(FechaNacimiento))
+
+
+Vendedor (#Codigo, Nombre, Telefono, FechaNacimiento, Comision, ZonaActuacion) siendo
+	Codigo es cadena no nulo
+	Nombre es cadena
+	Telefono es entero
+	FechaNombre es entero
+	Titulacion es cadena no nulo
+		PK (Codigo)
+		FK (Codigo/EMPLEADO(Codigo), Nombre/EMPLEADO(Nombre), Telefono/EMPLEADO(Telefono), FechaNacimiento/EMPLEADO(FechaNacimiento), ZonaActuacion/AGENCIA(ZonaActuacion))

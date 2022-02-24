@@ -1,0 +1,38 @@
+Socio (#CodigoSocio, Telefono, NIF, Nombre, Apellidos, Direccion) siendo
+	CodigoSocio es cadena no nulo
+	Telefono es entero no nulo
+	NIF es cadena no nulo
+	Apellido es cadena
+	Nombre es cadena	
+	Direcciones es cadena
+		PK (CodigoSocio)
+		FK ()
+
+
+Presta (#CodigoSocio, #ISBN, FechaEntrega, FechaDevolucion) siendo
+	CodigoSocio es cadena no nulo
+	ISBN es cadena no nulo
+	FechaEntrega es entero
+	FechaDevolucion es entero
+		PK (CodigoSocio, ISBN)
+		FK (CodigoSocio/SOCIO(CodigoSocio), ISBN/LIBRO(ISBN))
+
+
+Libro (#ISBN, AñoEdicion, N.Autor, Titulo, Año, Editorial) siendo
+	ISBN es cadena no nulo
+	AñoEdicion es entero
+	N.Autor es cadena
+	Titulo es cadena
+	Año es entero no nulo
+	Editorial es cadena no nulo
+		PK (ISBN)
+		FK ()
+
+
+
+Tiene (#ISBN, #Nº.Volumen, Deterioro) siendo
+	ISBN es cadena no nulo
+	Nº.Volumen es entero no nulo
+	Deterioro es cadena no nulo
+		PK (ISBN, Nº.Volumen)
+		FK (ISBN/LIBRO(ISBN))

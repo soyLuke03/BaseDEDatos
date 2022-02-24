@@ -1,0 +1,182 @@
+			<---Ejercicio 1--->
+
+
+Libro (#Codigo, Titulo, ISBN, Editorial, Paginas) siendo
+	Codigo siendo cadena no nulo
+	Titulo es cadena
+	ISBN es entero no nulo
+	Editorial es cadena
+	Paginas es entero
+		PK (Codigo)
+		FK ()
+
+Ejemplar (#Codigo, Localizacion, #CodigoLibro) siendo
+	Codigo siendo cadena no nulo
+	Localizacion es cadena
+		PK (Codigo, CodigoLibro)
+		FK (CodigoLibro/LIBRO(Codigo))
+
+Usuario (Direccion, #Codigo, Nombre, Telefono) siendo
+	Codigo siendo cadena no nulo
+	Direccion es cadena no nulo
+	Nombre es cadena
+	Telefono es entero no nulo
+		PK (Codigo)
+		FK ()
+
+Autor (#Codigo, Nombre) siendo
+	Codigo siendo cadena no nulo
+	Nombre es cadena no nulo
+		PK (Codigo)
+		FK ()
+
+Escribe (#CodigoLibro, #CodigoAutor) siendo
+	CodigoLibro es entero no nulo
+	CodigoAutor es entero no nulo
+		PK (CodigoLibro, CodigoAutor)
+		FK (CodigoLibro/LIBRO(Codigo), CodigoAutor/AUTOR(Codigo))
+
+
+Saca (#CodigoEjemplar, #CodigoUsuario, FechaDevolucion, #FechaPrestamo) siendo
+	CodigoEjemplar es entero no nulo
+	CodigoUsuario es cadena no nulo
+	FechaDevolucion es entero no nulo
+	FechaPrestamo es entero no nulo
+		PK (CodigoEjemplar, CodigoUsuario, FechaPrestamo)
+		FK (CodigoEjemplar/EJEMPLAR(Codigo), CodigoUsuario/USUARIO(Codigo))
+
+
+
+
+
+
+			<---Ejercicio 2--->
+
+
+
+Producto (Descripcion, #Codigo, Existencias, Precio) siendo
+	Descripcion es cadena no nulo
+	Codigo es cadena no nulo
+	Existencias es entero 
+	Precio es entero no nulo	
+		PK (Codigo)
+		
+
+Proveedor (#Codigo, Nombre, Apellidos, Direccion, Telefono) siendo
+	Codigo es cadena no nulo
+	Nombre es cadena 	
+	Apellidos es cadena no nulo
+	Direccion es cadena no nulo
+	Telefono es entero no nulo
+		PK (Codigo)
+		
+
+Cliente (#Codigo, Apellidos, Direccion, Nombre, Telefono) siendo
+	Codigo es cadena no nulo
+	Apellidos es cadena no nulo
+	Direccion es cadena 
+	Nombre es cadena
+	Telefono es entero no nulo
+		PK (Codigo)
+		
+
+Suministra (#CodigoProveedor, #CodigoProducto) siendo
+	CodigoProveedor es cadena no nulo
+	CodigoProducto es cadena no nulo
+		PK (CodigoProveedor, CodigoProducto)
+		FK (CodigoProveedor/PROVEEDOR(Codigo), CodigoProducto/PRODUCTO(Codigo))
+
+
+Compra (#CodigoProducto, #CodigoCliente, #FechaDeCompra) siendo
+	CodigoProducto es cadena no nulo
+	CodigoCliente es cadena no nulo
+	FechaDeCompra es entero no nulo
+		PK (CodigoProducto, CodigoCliente, FechaDeCompra)
+		FK (CodigoProducto/PRODUCTO(Codigo), CodigoCliente/CLIENTE(Codigo))
+
+
+
+
+
+
+
+
+			<---Ejercicio 3--->
+
+
+
+Profesor (#DNI, Nombre, Dirección, Teléfono) siendo
+	DNI es cadena no nulo
+	Nombre es cadena
+	Dirección es cadena no nulo
+	Teléfono es entero no nulo
+		PK (DNI)
+
+Alumno (#Expediente, FechaNacimiento, Nombre, Apellidos, ExpedienteDelegado) siendo
+	Expediente es cadena no nulo
+ 	FechaNacimiento es entero no nulo
+	Nombre es cadena
+	Apellidos es cadena no nulo
+	ExpedienteDelegado es cadena
+		PK (Expediente)
+		FK (ExpedienteDelegado/ALUMNO(Expediente))
+
+Módulo (#Código, DNI, Nombre) siendo
+	Código es cadena no nulo
+	Nombre es cadena no nulo
+	DNI es cadena
+		PK (Código)
+		FK (DNI/PROFESOR(DNI))
+
+Cursa (#Código, #Expediente) siendo
+	Código es cadena no nulo
+	Expediente es cadena no nulo
+		PK (Código, Expediente)
+
+
+
+
+
+			<---Ejercicio de la pizarra--->
+
+
+
+
+
+
+
+Coche (#Matrícula, Marca, Modelo, Color, Precio) siendo
+	Matrícula es cadena no nulo
+	Marca es cadena
+	Modelo es cadena
+	Color es cadena
+	Precio es entero
+		PK (Matrícula)
+
+
+Cliente (#NIF, Dirección, Ciudad, Teléfono, Nombre, Matrícula) siendo
+	NIF es cadena no nulo
+	Dirección es cadena no nulo
+	Ciudad es cadena no nulo
+	Teléfono es entero
+	Nombre es cadena no nulo
+	Matrícula es cadena no nulo
+		PK (NIF)
+		FK (Matrícula/COCHE(Matrícula))
+
+
+Revisión (#Código, Frenos, Aceite, Filtros) siendo
+	Código es cadena no nulo
+	Frenos es booleano
+	Aceite es booleano
+	Filtros es booleano
+		PK (Código)
+
+
+Pasa (#Código, #Matrícula) siendo
+	Código es cadena no nulo
+	Matrícula es cadena no nulo
+		PK (Código, Matrícula)
+		FK (Código/REVISIÓN(Código), Matrícula/COCHE(Matrícula))
+
+

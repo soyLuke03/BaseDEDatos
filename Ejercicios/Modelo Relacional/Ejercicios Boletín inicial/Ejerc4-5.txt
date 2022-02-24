@@ -1,0 +1,89 @@
+Empleado (#NIF, Nombre, Apellidos, Titulación, Teléfono, FechaNacimiento, Codigo) siendo
+	NIF es entero no nulo
+	Nombre es cadena
+	Apellido es cadena
+	FechaNacimiento es entero
+	Titulacion es cadena
+	Telefono es cadena
+		PK (NIF)
+		FK (Codigo/D.EMPRESA(Codigo))
+
+Trabaja (#NIF, #Codigo) siendo
+	NIF entero no nulo
+	Descripcion cadena no nulo
+		PK (NIF, Codigo)
+		FK(NIF/EMPLEADO(NIF), Codigo/LOCAL(Codigo))
+
+
+Local (#Codigo, Descripcion) siendo
+	Codigo es entro no nulo
+	Descripcion es cadena
+		PK (Codigo)
+		
+
+
+Internacional (#Codigo, Descripcion, Pais, Localidad, Asegurado) siendo
+	Codigo es entero no nulo
+	Descripcion es cadena 
+	Pais es cadena
+	Localidad es cadena
+	Asegurado es cadena
+		PK (Codigo)
+		
+
+
+Participa (#NIF, #Codigo, FuncionesCoordinacion, #Fechaincorporacion) siendo
+	NIF es entero no nulo
+	Codigo es entero no nulo
+	FechaIncorporacion es entero no nulo
+	FuncionesCoordinacion es cadena 
+		PK (NIF, Codigo, FechaIncorporacion)
+		FK (NIF/EMPLEADO(NIF), Codigo/INTERNACIONAL(Codigo))
+
+
+Español (#NIF, NºCuenta) siendo
+	NIF es cadena no nulo
+	NºNumero es entero no nulo
+		PK (NIF)
+		FK (NIF/EMPLEADA(NIF))
+
+
+Extranjero (#NIF, Nacionalidad, PaísTributación) siendo
+	NIF es cadena no nulo
+	Nacionalidad es cadena no nulo
+	PaísTributación cadena no nulo
+		PK (NIF)
+		FK (NIF/EMPLEADA(NIF))
+
+
+
+D.Empleado (#Código, Nombre) siendo
+	Codigo es entero no nulo
+	Nombre es cadena no nulo
+		PK (Codigo)
+		FK ()
+
+
+Secciones (#CodigoSeccion, AreaTrabajo, Nombre, Codigo) siendo
+	CodigoSeccion es cadena no nulo
+	AreaTrabajo es cadena no nulo
+	Nombre es cadena no nulo
+		PK (CodigoSeccion)
+		FK (Codigo/SECCIONES(Codigo))
+
+
+Hijos (#FehcaNacimiento, #NIF, Nombre) siendo
+	FechaNacimiento es entero no nulo
+	NIF es cadena no nulo
+	Nombre es cadena
+		PK (FechaNacimiento, NIF)
+		FK (NIF/EMPLEADO(NIF))
+
+Ayudas (#Codigo, Descripcion, Cuantia, Año, FechaNacimiento)
+	Codigo es cadena no nulo
+	Descripcion es cadena
+	Cuantia es entero 
+	Año es entero
+	FechaNacimiento es entero no nulo
+		PK (Codigo)
+		FK (Año/CONSIGUE(Año), FechaNacimiento/HIJOS(FechaNacimiento))

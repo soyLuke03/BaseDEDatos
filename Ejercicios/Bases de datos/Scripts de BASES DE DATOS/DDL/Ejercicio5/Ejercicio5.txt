@@ -1,0 +1,53 @@
+===Ejercicio 5===
+
+
+Profesor (#DNI, Nombre, Dirección, Sueldo, Titulación);
+
+DNI es cadena no nulo
+Nombre es cadena
+Dirección es cadena
+Sueldo es entero
+Titulación es cadena no nulo
+
+    PK (DNI)
+
+
+Curso (#Código, Nombre, FechaInicio, HorasDeCurso, NMaximoAlumnos);
+
+Codigo es entero no nulo
+Nombre es cadena no nulo
+FechaInicio es fecha 
+FechaFinal es fecha
+HorasDeCurso es entero
+NMaximoAlumnos es entero no nulo
+DNI_Profesor es cadena no nulo
+
+    PK (Codigo)
+
+    FK (DNI_Profesor) references Profesor (DNI_Profesor)
+
+
+Alumno(#DNI, Nombre, Apellidos, Dirección, FechaNaciemiento, Sexo );
+
+DNI es cadena no nulo,
+Nombre es cadena no nulo
+Apellidos es cadena no nulo
+Dirección es cadena
+FechaNaciemiento es fecha
+Sexo es cadena
+CodigoCurso es entero
+
+    PK (DNI)
+
+    FK (CodigoCurso) references Curso (CodigoCurso)
+
+
+
+¿Cumple la 1º forma normal?
+Cumple la 1º forma normal ya que todos los atributos son atómicos.
+
+¿Cumple la 2º forma normal?
+Cumple la 2º forma normal ya que está en 1ºFN y sus atributos dependen de la clave primaria y no de una parte de ella.
+
+¿Cumple la 3º forma normal?
+Cumple la 3º forma normal ya que está en 2ºFN y sus atributos no clave no dependen de otros atributos no clave.

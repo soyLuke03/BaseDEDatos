@@ -1,0 +1,29 @@
+Libro (#Codigo, Titulo, ISBN, Editorial, Paginas) siendo
+	Codigo siendo cadena no nulo
+	Titulo es cadena
+	ISBN es entero no nulo
+	Editorial es cadena
+	Paginas es entero
+		PK (Codigo)
+		FK ()
+
+Ejemplar (#Codigo, Localizacion) siendo
+	Codigo siendo cadena no nulo
+	Localizacion es cadena
+		PK (Codigo)
+		FK ()
+
+Usuario (Direccion, #Codigo, Nombre, Telefono) siendo
+	Codigo siendo cadena no nulo
+	Direccion es cadena no nulo
+	Nombre es cadena
+	Telefono es entero no nulo
+		PK (Codigo)
+		FK ()
+
+Autor (#Codigo, Nombre) siendo
+	Codigo siendo cadena no nulo
+	Nombre es cadena no nulo
+		PK (Codigo)
+		FK ()
+

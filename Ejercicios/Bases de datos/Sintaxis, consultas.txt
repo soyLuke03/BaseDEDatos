@@ -1,0 +1,45 @@
+SINTAXIS: CONSULTA DE DATOS
+
+
+====================================================================================
+
+
+SELECT [all/distinct] [colum/*] FROM tabla [where condición][order by colum [Desc/Asc], colum[Desc/Asc]]
+
+
+FROM, obligatoria, se especifican las tablas donde está la información necesaria.
+	-SELECT * FROM
+
+·Si el usuario no es el propietario:
+	-SELECT * FROM usuario.tabla
+
+·Se puede poner alias a las tablas:
+	-SELECT * FROM tabla t
+
+OPERADORES:
+	-Where		-Between
+	-In		-Not between
+	-Not in		-Like
+	
+	
+OPERADORES LÓGICOS:
+	-AND	-OR	-NOT	-()
+	
+
+OPERADORES DE ORDENACIÓN: (SIEMPRE EN LA ÚLTIMA POSICIÓN)
+	-ORDER BY colum [ASC/DESC]
+COMPARACIÓN DE CADENAS:
+
+	-[=] Comparar cadenas enteras
+	-[LIKE] Comparar cadenas que sean como lo que se pida
+
+LIKE:
+	Like 'Analista' Que sea analista
+	Like 'M%'	Que empiece por M
+	Like '%M%'	Que contenga la M
+	Like '_M'	Que M, sea el segundo caracter.
+
+
+IN: 
+	SELECT * FROM tabla WHERE columna IN (1,10,20)  Que sea 1, 10 o 20.
+

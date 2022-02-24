@@ -1,0 +1,11 @@
+En las relaciones (1,1)-(1,0):    [Similar a 1:N]
+	--> Se propaga la clave del (1,1) al lado del 0
+
+
+En las relaciones (1,0)-(1,0):     [Similar a N:N]
+	--> Se crean dos tablas más la tabla de la relación 
+	    [Sus claves son las primarias de las demás tablas]
+	
+
+En las relaciones (1,1)-(1,1):
+	--> Se propaga la clave primaria de una entidad a la otra. Sin distinción.

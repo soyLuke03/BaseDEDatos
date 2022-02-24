@@ -1,0 +1,69 @@
+Arbitros (#NºColegiado, NºTemporadas, ColegioArbitral,Apellidos,Nombre) siendo
+	NºColegiado es entero no nulo
+	NºTemporadas es entero
+	ColegioArbitral es cadena
+	Apellidos es cadena
+	Nombre es cadena
+		PK (NºColegiado)
+
+Partidos (#IDPartido, Fecha, Jornada, Resultado) siendo
+	IDPartido es entero no nulo
+	Fecha es entero no nulo
+	Jornada es entero
+	Resultado es entero
+		PK (IDPartido)
+
+Arbitrados (#NºColegiado, #IDPartido, Función) siendo
+	NºColegiado es entero no nulo
+	IDPartido es entero no nulo
+		PK (NºColegiado, IDPartido)
+		FK (NºColegiado/ARBITROS(NºColegiado), IDpartido/PARTIDOS(IDPartido))
+
+
+Equipos (#Nombre, AñoFundación, NombrePresidente, NºSocios, NombreEstadio) siendo
+	Nombre es cadena no nulo
+	AñoFundación es entero no nulo
+	NombrePresidente es cadena
+	NºSocios es entero
+	NombreEstadio es cadena
+		PK (Nombre)
+		
+
+Juegan (#Nombre, #IDPartido, LocalS_N) siendo
+	Nombre es cadena no nulo
+	IDPartido es entero no nulo
+	LocalS_N es booleano no nulo
+		PK (Nombre, IDPartido)
+		FK (Nombre/EQUIPO(Nombre), IDPartido/PARTIDOS(IDPartido))
+
+
+Futbolistas (#NºFicha, Apellidos, Nombre, Peso, Estatura, FechaNacimiento) siendo
+	NºFicha es entero no nulo
+	Apellidos es cadena no nulo
+	Nombre es cadena no nulo
+	Peso es entero
+	Estatura es entero
+	FechaNacimiento es entero
+		PK (NºFicha)
+	
+
+Pertenece (#Nombre, #NºFicha, #FechaComienzo, Duracion, FichaAnual, ClausulaResincion) siendo
+	Nombre es cadena no nulo
+	NºFicha es entero no nulo
+	FechaComienzo es entero no nulo
+	Duracion es entero
+	FichaAnual es cadena 
+	ClausulaResincion es cadena
+		PK (Nombre, NºFicha, FechaComienzo)
+		FK (Nombre/EQUIPOS(Nombre), NºFicha/FUTBOLISTAS(NºFicha))
+
+Disputan (#NºFicha, #IDPartido, Tarjetas, Goles, MinutosJugados) siendo
+	NºFicha es entero no nulo
+	IDPartido es entero no nulo
+	Tarjetas es cadena
+	Goles es entero
+	MinutosJugados es entero
+		PK (NºFicha IDPartido)
+		FK (NºFicha/FUTBOLISTAS(NºFicha), IDPartido/PARTIDOS(IDPartido))
+
+

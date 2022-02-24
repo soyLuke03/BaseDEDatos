@@ -1,0 +1,30 @@
+Alumno (#Núm_Matrícula, FechaNacimiento, Teléfono, Nombre) siendo
+	Núm_Matrícula es entero no nulo
+	FechaNacimiento es entero
+	Teléfono es entero
+	Nombre es entero
+		PK (Núm_Matrícula)
+		
+
+Asignatura (#Código_Asignatura, Nombre, Id_P) siendo
+	Código_Asignatura es entero no nulo
+	Nombre es cadena
+		PK (Código_Asignatura)
+		FK (Id_P/PROFESOR(Id_P))
+
+Matriculado (#Código_Asignatura, #Núm_Matrícula, Curso_Escolar) siendo
+	Código_Asignatura es entero no nulo
+	Núm_Matrícula es entero no nulo
+	Curso_Escolar es cadena
+		PK (Codigo_Asignatura, Num_Matricula)
+		FK (Codigo_Asignatura/ASIGNATURA(Codigo_asignatura), Num_Matricula/ALUMNO(Num_Matricula))
+
+
+Profesor (#Id_P, NIF_P, telefono, Especialidad, Nombre) siendo
+	Id_P es entero no nulo
+	NIF_P es entero no nulo
+	Telefono es entero
+	Especialidad es cadena
+	Nombre es cadena
+		PK (Id_P)
+		

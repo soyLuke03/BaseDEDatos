@@ -1,0 +1,644 @@
+===Ejerc1===·
+
+    Categoría (#Nombre_Cat) siendo
+        Nombre_Cat es cadena no nulo
+            PK (Nombre_Cat)
+
+    Cliente (#DNI, Dirección, Nombre, Apellidos, FechaNacimiento, Nombre_Cat) siendo
+        DNI es cadena no nulo
+        Dirección es cadena 
+        Nombre es cadena no nulo    
+        Apellidos es cadena no nulo
+        FechaNacimiento es entero
+            PK (DNI)
+            FK (Nombre_Cat/CATEGORIA(Nombre_Cat))
+
+    Producto (#Nombre, NProducto, Precio) siendo
+        Nombre es cadena no nulo
+        NProducto es entero no nulo
+        Precio es entero
+            PK (Nombre)
+
+    Relacion (#Nombre, Nombre_Cat) siendo   
+        Nombre cadena no nulo
+        Nombre_Cat cadena no nulo
+            PK (Nombre)
+            FK (Nombre/PRODUCTO(Nombre))
+
+    Venta (#DNI, #Nombre, #FechaDeLaVenta) siendo
+        DNI es cadena no nulo
+        Nombre es cadena no nulo
+        FechaDeLaVenta es entero
+            PK (DNI, Nombre, FechaDeLaVenta)
+            FK (DNI/CLIENTE(DNI), Nombre/PRODUCTO(Nombre))
+
+    NORMALIZACION:
+
+    1FN: Se encuentra en esta forma normal porque todos los atributos son atómicos
+    2FN: Hay que verificar la 1FN y que sus atributos no claves dependan de la clave. Tras la verificación, se cumplen los requisitos para la 2FN.
+    3FN: Hay que verificar la 2FN y la 1FN; y que sus atributos no claves no dependan de otros atributos no claves. El modelo cumple la 3FN, ya que cumple los requisitos para la 3FN.
+
+    Categoría (#Nombre_Cat) siendo
+        Nombre_Cat es cadena no nulo
+            PK (Nombre_Cat)
+
+    Producto (#Cod_Producto, Nombre, NProducto, Nombre_Categoria) siendo
+        Nombre es cadena no nulo
+        NProducto es entero no nulo
+        Cod_Producto es entero no nulo
+        Nombre_Categoria es cadena
+            PK (Cod_Producto, Nombre_Categoria)
+            FK (Nombre_Categoria/Categoria(Nombre_Cat))
+
+    Cliente (#DNI, Dirección, Nombre, Apellidos, FechaNacimiento, Nombre_Cat) siendo
+        DNI es cadena no nulo
+        Dirección es cadena 
+        Nombre es cadena no nulo    
+        Apellidos es cadena no nulo
+        FechaNacimiento es entero
+            PK (DNI)
+            FK (Nombre_Cat/CATEGORIA(Nombre_Cat))
+
+    Venta (#DNI, #Nombre) siendo
+        DNI es cadena no nulo
+        Nombre es cadena no nulo
+            PK (DNI, Nombre, FechaDeLaVenta)
+            FK (DNI/CLIENTE(DNI), Nombre/PRODUCTO(Nombre))
+
+===Ejerc2===·
+
+    Coche (#Matrícula ,Marca, Modelo) siendo    
+        Marca es cadena
+        Modelo es cadena
+        Matrícula es cadena no nulo
+            PK (Matrícula)
+
+    Profesor (#DNI, Nombre, NSS, Apellidos) siendo
+        DNI es cadena no nulo   
+        Nombre es cadena no nulo
+        NSS es cadena no nulo   
+        Apellidos es cadena 
+            PK (DNI)
+
+    Alumno (#DNI, Nombre, Apellidos) siendo
+        DNI es cadena no nulo
+        Nombre es cadena no nulo
+        Apellidos es cadena
+            PK (DNI)
+
+    Asigna (#DNI_Profe, #DNI_Alumno, #Fecha_Hora_Profe) siendo  
+        DNI_Profe es cadena no nulo
+        DNI_Alumno es cadena no nulo 
+        Fecha_Hora_Profe es fecha no nulo
+            PK (DNI_Alumno, DNI_Profe, Fecha_Hora_Profe)
+            FK (DNI_Alumno/ALUMNO(DNI))
+            FK (DNI_Profe/PROFESOR(DNI))
+
+    Conduce (#Matrícula, #DNI, #Fecha_Hora_Coche) siendo
+        Matricula es cadena no nulo
+        DNI es cadena no nulo
+        Fecha_Hora_Coche es fecha no nulo
+            PK (Matricula, DNI, Fecha_Hora_Coche)
+            FK (Matricula/COCHE(Matricula))
+            FK (DNI/ALUMNO(DNI))
+
+    NORMALIZACION:
+
+        1FN:¿Está en 1FN? Se encuentra en 1FN ya que todos los atributos son atómicos.
+        2FN:¿Está en 2FN? Se encuentra en 2FN porque todos los atributos dependen de su clave.
+        3FN:¿Está en 3FN? Se encuentra en 3FN ya que los atributos no clave no dependen de otros atributos no clave.
+
+===Ejerc3===·
+
+    Departamento (#Nombre, Presupuesto, DNI) siendo
+        Nombre es cadena no nulo
+        Presupuesto es entero
+        DNI es cadena no nulo
+            PK (Nombre)
+            FK (DNI/EMPLEADO(DNI))
+
+    Depende (#Nombre, #Nombre_Depende) siendo
+        Nombre es cadena no nulo
+            PK (Nombre)
+            FK (Nombre/DEPARTAMENTO(Nombre))
+            FK (Nombre/DEPARTAMENTO_DEPENDE(Nombre_Depende))
+
+    Empleado (Apellidos, Casado, Nombre, NSS, NHijos, #DNI, Nombre_Depa) siendo
+        Apellidos es cadena no nulo
+        Casado es booleano
+        Nombre es cadena no nulo
+        NSS es cadena no nulo
+        NHijos es entero
+        DNI es cadena no nulo
+        Nombre_Depa es cadena
+            PK (DNI)
+            FK (Nombre_Depa/DEPARTAMENTO(Nombre))
+
+    1FN:¿Está en 1FN? Si
+    2FN:¿Está en 2FN? Si
+    3FN:¿Está en 3FN? Si
+
+===Ejerc4===·
+
+    Sucursal (#Numero, Ciudad, Activo) siendo
+        Numero es entero no nulo
+        Ciudad es cadena no nulo
+        Activo es booleano no nulo
+            PK (Numero)
+
+    Acude (#Numero, #NumeroCuenta) siendo
+        Numero es entero no nulo
+        NumeroCuenta es entero no nulo
+            PK (Numero, NumeroCuenta)
+            FK (Numero/SUCURSAL(Numero), NumeroCuenta/CUENTA(NumeroCuenta))
+
+    Cliente (#DNI, Nombre, Dirección, Ciudad) siendo
+        DNI es cadena no nulo
+        Nombre es cadena no nulo
+        Direccion es cadena
+        Ciudad es cadena
+            PK (DNI)
+
+    Tiene (#DNI, #NumeroCuenta) siendo
+        DNI es cadena no nulo
+        NumeroCuenta es entero no nulo
+            PK (DNI, NumeroCuenta)
+            FK (DNI/CLIENTE(DNI), NumeroCuenta/CUENTA(NumeroCuenta))
+
+    Transacciones (#NTransaccion, Fecha, Tipo, Cantidad, NumeroCuenta) siendo
+        NTransaccion es entero no nulo
+        Fecha es entero no nulo
+        Tipo es cadena no nulo
+        Cantidad es entero
+        NumeroCuenta es entero no nulo
+            PK (NTransaccion)
+            FK (NumeroCuenta/CUENTA(NumeroCuenta))
+
+    1FN:¿Está en 1FN? Si, porque los atributos son atómicos
+    2FN:¿Está en 2FN? Si, porque los atributos no clave dependen de la clave primaria
+    3FN:¿Está en 3FN? Si
+
+===Ejerc5===
+
+    Profesor (NSS, Nombre, Apellidos, Nacionalidad) siendo
+        NSS es cadena no nulo   
+        Nombre es cadena no nulo
+        Apellidos es cadena
+        Nacionalidad es cadena no nulo
+
+    Grupo (#Nivel, NombreGrupo, Horario, NSS) siendo
+        Nivel es entero no nulo
+        NombreGrupo es cadena no nulo
+        Horario es entero no nulo
+        NSS es cadena no nulo
+            PK (Nivel)
+            FK (NSS/PROFESOR(NSS))
+
+    Alumno (#Cuenta, Nacionalidad, Nombre, Nivel) siendo
+        Cuenta es cadena no nulo
+        Nacionalidad es cadena no nulo
+        Nombre es cadena
+        Nivel es entero no nulo
+            PK (Cuenta)
+            FK (Nivel/GRUPO(Nivel))
+
+===Ejerc6===
+
+    Salas (#NSala, Situacion) siendo
+        NSala es entero no nulo
+        Situacion es cadena
+            PK (NSala)
+
+    Trabaja en (#Dia, #Hora, #NSala, #DNI) siendo
+        Dia es entero no nulo
+        Hora es entero no nulo
+        NSala es entero no nulo
+        DNI es entero no nulo
+            PK (Dia, Hora, NSala, DNI)
+            PK (DNI/MEDICO(DNI), NSala/SALAS(NSala))
+
+    Paciente (#DNI, Nombre, Apellidos, Direccion, DNI_Med) siendo
+        DNI es cadena no nulo
+        Nombre es cadena
+        Apellidos es cadena no nulo
+        Direccion es cadena 
+        DNI_Med es cadena
+            PK (DNI)
+            FK (DNI_Med/MEDICO(DNI))
+
+    Medico (#DNI, Nombre, Apellidos, Direccion, NumeroCuenta) siendo
+        DNI es cadena no nulo
+        Nombre es cadena
+        Apellidos es cadena no nulo
+        Direccion es cadena
+        NumeroCuenta es entero no nulo
+            Pk (DNI)
+
+===Ejerc7===
+
+    Arbitros (#NºColegiado, NºTemporadas, ColegioArbitral,Apellidos,Nombre) siendo
+        NºColegiado es entero no nulo
+        NºTemporadas es entero
+        ColegioArbitral es cadena
+        Apellidos es cadena
+        Nombre es cadena
+            PK (NºColegiado)
+
+    Partidos (#IDPartido, Fecha, Jornada, Resultado) siendo
+        IDPartido es entero no nulo
+        Fecha es entero no nulo
+        Jornada es entero
+        Resultado es entero
+            PK (IDPartido)
+
+    Arbitra (#NºColegiado, #IDPartido, Función) siendo
+        NºColegiado es entero no nulo
+        IDPartido es entero no nulo
+            PK (NºColegiado, IDPartido)
+            FK (NºColegiado/ARBITROS(NºColegiado), IDpartido/PARTIDOS(IDPartido))
+
+    Equipos (#Nombre, AñoFundación, NombrePresidente, NºSocios, NombreEstadio) siendo
+        Nombre es cadena no nulo
+        AñoFundación es entero no nulo
+        NombrePresidente es cadena
+        NºSocios es entero
+        NombreEstadio es cadena
+            PK (Nombre)		
+
+    Juegan (#Nombre, #IDPartido, LocalS_N) siendo
+        Nombre es cadena no nulo
+        IDPartido es entero no nulo
+        LocalS_N es booleano no nulo
+            PK (Nombre, IDPartido)
+            FK (Nombre/EQUIPO(Nombre), IDPartido/PARTIDOS(IDPartido))
+
+    Futbolistas (#NºFicha, Apellidos, Nombre, Peso, Estatura, FechaNacimiento) siendo
+        NºFicha es entero no nulo
+        Apellidos es cadena no nulo
+        Nombre es cadena no nulo
+        Peso es entero
+        Estatura es entero
+        FechaNacimiento es entero
+            PK (NºFicha)
+        
+    Pertenece (#Nombre, #NºFicha, #FechaComienzo, Duracion, FichaAnual, ClausulaResincion) siendo
+        Nombre es cadena no nulo
+        NºFicha es entero no nulo
+        FechaComienzo es entero no nulo
+        Duracion es entero
+        FichaAnual es cadena 
+        ClausulaResincion es cadena
+            PK (Nombre, NºFicha, FechaComienzo)
+            FK (Nombre/EQUIPOS(Nombre), NºFicha/FUTBOLISTAS(NºFicha))
+
+    Disputan (#NºFicha, #IDPartido, Tarjetas, Goles, MinutosJugados) siendo
+        NºFicha es entero no nulo
+        IDPartido es entero no nulo
+        Tarjetas es cadena
+        Goles es entero
+        MinutosJugados es entero
+            PK (NºFicha IDPartido)
+            FK (NºFicha/FUTBOLISTAS(NºFicha), IDPartido/PARTIDOS(IDPartido))
+
+===Ejerc8===
+
+    Jornada (#NJornada, Año, Mes, Dia) siendo
+        NJornada es entero no nulo
+        Año es entero no nulo
+        Mes es entero no nulo
+        Dia es entero no nulo
+            PK (NJornada)
+
+    Arbitro (#NAsociado) siendo
+        NAsociado es entero no nulo
+            PK (NAsociado)
+
+    Partido (#NCorrelativo, NJornada, NAsociado, NEntradas, CodigoSala) siendo
+        NAsociado es entero
+        NEntradas es entero
+        CodigoSala es entero
+        NCorrelativo es entero no nulo
+        NJornada es entero no nulo
+            PK (NCorrelativo)
+            FK (NJornada/PARTIDA(NCorrelativo), NAsociado/ARBITRO(NAsociado, CodigoSala/SALA(CodigoSala)))
+
+    Movimiento (#NCorrelativo, Posiciones, Comentario) siendo
+        NCorrelativo es entero no nulo
+        Posiciones es cadena no nulo
+        Comentario es booleano no nulo
+            PK (NCorrelativo)
+            FK (NCorrelativo/PARTIDO(NCorrelativo))
+
+    Jugador (NivelJuego, #NAsociado) siendo
+        NivelJuego es entero no nulo
+        NAsociado es entero no nulo
+            PK (NAsociado)
+
+    Pais (#NCorrelativo, Nombre, NClubs) siendo
+        NCorrelativo es entero no nulo
+        Nombre es cadena no nulo
+        NClubs es entero
+            PK (NCorrelativo)
+
+    Representa (#NCorrelativo) siendo
+        NCorrelativo es entero no nulo
+            PK (NCorrelativo)
+            FK (NCorrelativo/PAIS(NCorrelativo))
+
+    Participante (#NAsociado, Nombre, Direccion, Telefono, Campeonato, NCorrelativo) siendo
+        NCorrelativo es entero
+        NAsociado entero no nulo
+        Nombre es cadena no nulo
+        Direccion es cadena
+        Telefono es entero no nulo
+        Campeonato es entero
+            PK (NAsociado)
+            FK (NCorrelativo/PAIS(NCorrelativo))
+
+    Juega (PartidasJugadas, ColorJugado, #NCorrelativo, #NAsociado) siendo
+        PartidasJugadas es entero 
+        ColorJugado es cadena
+        NCorrelativo es entero no nulo
+        NAsociado es entero no nulo
+            Pk (NCorrelativo, NAsociado)
+            FK (NCorrelativo/PARTIDA(NCorrelativo), NAsociado/PARTICIPANTE(NAsociado))
+
+    Hotel #NTelefono, Nombre, Direccion, #CodigoSala) siendo
+        NTelefono es entero no nulo
+        Nombre es cadena no nulo
+        Direccion es cadena
+            PK (CodigoSala)
+            FK (NTelefono/HOTEL(NTelefono))
+
+===Ejerc9===
+
+    Departamento (#CodigoDepa, Funcion) siendo
+        CodigoDepa es entero no nulo
+        Funcion es cadena no nulo
+            PK (CodigoDepa)
+
+    Trabaja (FuncionEmpleado, #CodigoDepa, #NMatricula) siendo
+        FuncionEmpleado es cadena no nulo
+        CodigoDepa es entero no nulo
+        NMatricula es cadena no nulo
+            PK (CodigoDepa, NMatricula)
+            FK (CodigoDepa/DEPARTAMENTO(CodigoDepa), NMatricula/EMPLEADOS(NMatricula))
+
+    Empleados (#NMatricula, NIF, Nombre, NHijos, RetencionHacienda, DatosCuentaCorriente) siendo
+        NMatricula es entero no nulo
+        NIF es entero no nulo
+        Nombre es cadena 
+        NHijos es entero 
+        RetencionHacienda es entero
+        DatosCuentaCorriente es cadena no nulo
+            PK (NMatricula)
+
+    Justificante (#NMatricula, EjercicioFiscal, NMes, NOrden, NominaIngreso, NMatriculaEmpleado, Descuento) siendo
+        NMatricula es entero no nulo
+        EjercicioFiscal es cadena no nulo
+        NMes es entero no nulo
+        NOrden es entero
+        NominaIngreso es entero no nulo
+        NMatriculaEmpleado es entero 
+        Descuento es entero no nulo
+            PK (NMatricula)
+            FK (NMatricula/EMPLEADO(NMatricula))
+
+    Linea (#NMatricula, NLinea, Cantidad) siendo
+        NMatricula es entero no nulo
+        NLinea es entero no nulo
+        Cantidad es entero
+            PK (NMatricula)
+            FK (NMatricula/EMPLEADO(NMatricula))
+
+    Descuento (#NMatricula, BaseDescuento) siendo
+        NMatricula es entero no nulo
+        BaseDescuento es entero no nulo
+            PK (NMatricula)
+            FK (NMatricula/LINEA(NMatricula))
+
+    Concepto (#Codigo, Descripcion) siendo
+        Codigo es entero no nulo
+        Descripcion es cadena no nulo
+            Pk (Codigo)
+
+    Ingreso (#NMatricula, Codigo) siendo
+        Codigo es entero no nulo
+        NMatricula es entero no nulo
+            PK (NMatricula)
+            FK (NMatricula/LINEA(NMatricula), Codigo/CONCEPTO(Codigo))
+
+    ElementoCoste (#Codigo, Descripcion, Saldo) siendo
+        Codigo es entero no nulo
+        Descripcion es cadena no nulo
+        Saldo es entero
+
+    Imputa (#Codigo, #CodigoElemento) siendo
+        Codigo es entero no nulo
+        CodigoElemento es entero 
+            Pk (Codigo, CodigoElemento)
+            FK (Codigo/CONCEPTO(Codigo), CodigoElemento/ELEMENTOCOSTE(CodigoElemento))
+
+===Ejerc10===
+
+
+    Fabricante (#Direccion, Nombre) siendo
+        Direccion es cadena no nulo
+        Nombre es cadena
+            Pk (Direccion)
+
+    Distribuidor (Nombre, #Direccion, NTelefono) siendo
+        Nombre es cadena no nulo
+        Direccion es cadena no nulo
+        NTelefono es entero
+
+    Trabaja (#DireccionFabricante, #DireccionDistribuidor) siendo
+        DireccionDistribuidor es cadena no nulo
+        DireccionFabricante es cadena no nulo 
+            PK (DireccionFabricante, DireccionDistribuidor)
+            FK (DireccionDistribuidor/DISTRIBUIDOR(Direccion), DireccionFabricante/FABRICANTE(Direccion))
+
+    Telefono (#NTelefono, DireccionDistribuidor, DireccionFabricante) siendo
+        NTelefono es entero no nulo
+        DireccionFabricante es cadena no nulo
+        DireccionDistribuidor es cadena
+            PK (NTelefono)
+            FK (DireccionDistribuidor/DISTRIBUIDOR(Direccion), DireccionFabricante/FABRICANTE(Direccion))
+
+    Mueble (#Linea, Color, Dimensiones, #Direccion) siendo
+        Linea es cadena no nulo
+        Color es cadena
+        Dimensiones es entero no nulo
+        Direccion es cadena
+            PK (Linea)
+            FK (Direccion/FABRICANTE(Direccion))
+
+    MuebleBajo (#Linea, Altura) siendo
+        Linea es cadena no nulo
+        Altura es entero no nulo
+            Pk (Linea)
+            FK (Linea/MUEBLE(Linea))
+
+===Ejerc11===
+
+    Cliente (#CodigoUnico, DNI, Nombre, Direccion, Telefono) siendo 
+        CodigoUnico es entero no nulo
+        DNI es cadena no nulo
+        Nombre es cadena
+        Direccion es cadena no nulo
+        Telefono es entero
+            PK (CodigoUnico)
+
+    Reserva (#CodigoUnico, CodigoAgencia, FechaInicio, FechaFinal, PrecioTotal, PrecioAlquiler, LitrosGasolina, EntregaCoche) siendo
+        CodigoUnico es entero no nulo
+        CodigoAgencia es entero no nulo
+        FechaInicio es entero no nulo
+        FechaFinal es entero no nulo
+        PrecioTotal es entero
+        PrecioAlquiler es entero
+        LitrosGasolina es entero no nulo
+        EntregaCoche es booleano no nulo
+            PK (CodigoUnico)
+            FK (CodigoUnico/CLIENTE(CodigoUnico))
+
+    Coche (#Matricula, Modelo, Color, Marca, CodigoGarage, CodigoUnico) siendo
+        Matricula es cadena no nulo
+        CodigoUnico es entero
+        Modelo es cadena
+        Color es cadena
+        Marca es cadena no nulo
+        CodigoGarage es entero no nulo
+            PK (Matricula)
+            FK (CodigoUnico/RESERVA(CodigoUnico))
+
+===Ejerc12===
+
+
+    Visitante (Nombre, #DNI, Domicilio, Profesion) siendo
+        Nombre es cadena 
+        DNI es cadena no nulo
+        Domicilio es cadena
+        Profesion es cadena no nulo
+            PK (DNI)
+
+    Aloja (#DNI, #Codigo) siendo
+        DNI es cadena no nulo
+        Codigo es entero no nulo
+            PK (DNI, Codigo)
+            FK (DNI/VISITANTE(DNI), Codigo/ALOJAMIENTO(Codigo))
+
+    Alojamiento (#Codigo, Capacidad, Categoria) siendo
+        Codigo es entero no nulo
+        Capacidad es entero
+        Categoria es cadena no nulo
+
+    Comunidad (#Codigo) siendo
+        Codigo es entero no nulo
+            PK (Codigo)
+
+    Tiene (#Codigo, #Nombre) siendo
+        Codigo es entero no nulo
+        Nombre es cadena no nulo
+        PK (Codigo, Nombre)
+        FK (Codigo/COMUNIDAD(Codigo), Nombre/PARQUE(Nombre))
+
+
+    Parques (#Nombre, FechaDeclaracion) siendo
+        Nombre es cadena no nulo
+        FechaDeclaracion es entero no nulo
+            PK (Nombre)
+
+    Area (#Nombre, Supericie, Numero, Extension, NombreParque) siendo
+        Nombre es cadena no nulo
+        NombreParque es cadena no nulo
+        Superficie es entero
+        Numero es entero no nulo
+        Extension es entero no nulo
+            PK (Nombre)
+            FK (NombreParque/AREA(Nombre))
+
+    Mineral (Cristal, Roca, #NombreCientifico, NombreVulgar, NEspecies) siendo
+        Cristal es cadena no nulo
+        Roca es cadena no nulo
+        NombreCientifico es cadena no nulo
+        NombreVulgar es cadena no nulo
+        NEspecies es entero
+            PK (NombreCientifico)
+
+    Vegetal (Floracion, Periodo, #NombreCientifico, NombreVulgar, NEspecies) siendo
+        Floracion es cadena 
+        Periodo es cadena
+        NombreCientifico es cadena no nulo
+        NombreVulgar es cadena no nulo
+        NEspecies es entero
+            Pk(NombreCientifico)
+
+    Animal (Alimentacion, Celo, #NombreCientifico, NombreVulgar, NEspecies) siendo
+        Alimentacion es cadena 
+        Celo es cadena 
+        NombreCientifico es cadena no nulo
+        NombreVulgar es cadena no nulo
+        NEspecies es entero
+            PK (NombreCientifico)
+
+===EjercAgencia===
+
+
+    Agencia (#ZonaActuacion, Fax, Direccion, CodigoEmpleado) siendo
+        ZonaActuacion es cadena no nulo
+        Fax es entero no nulo
+        Direccion es cadena 
+        CodigoEmpleado es entero no nulo
+            PK (ZonaActuacion)
+            FK (CodigoEmpleado/EMPLEADO(CodigoEmpleado))
+
+    Telefono (#NºTelefono, ZonaActuacion) siendo
+        NºTelefono es entero no nulo
+        ZonaActuacion es cadena
+            PK (NºTelefono)
+            FK (ZonaActuacion/AGENCIA(ZonaActuacion))
+        
+    Inmueble (#Codigo, Propietario, Direccion, Superficie, PrecioAlquiler, Fianza, PrecioVenta, Hipoteca, ZonaActuacion) siendo 
+        Codigo es cadena no nulo
+        Propietario es cadena no nulo
+        Direccion es cadena
+        Superficie es entero
+        PrecioAlquiler es entero
+        Fianza es entero
+        PrecioVenta es entero
+        Hipoteca es booleano
+            PK (Codigo)
+            FK (PrecioAlquiler/ALQUILA(PrecioAlquiler), ZonaActuacion/AGENCIA(ZonaActuacion))
+
+    Local (#Codigo, LicenciaApertura) siendo
+        Codigo es cadena no nulo
+        LicenciaApertura es booleano
+            PK (Codigo)
+            FK (Codigo/INMUEBLE(Codigo))
+
+    Piso (#Codigo, Habitaciones, CuartosDeBaño, TipoGas, TipoPiso) siendo
+        Codigo es cadena no nulo
+        Habitaciones es entero no nulo
+        CuartosDeBaño es entero no nulo
+        TipoGas es cadena no nulo
+        TipoPiso es cadena no nulo
+            PK (Codigo)
+            FK (Codigo/INMUEBLE(Codigo))
+
+    Titular (#Codigo, Nombre, Telefono, FechaNacimiento, Titulacion) siendo
+        Codigo es cadena no nulo
+        Nombre es cadena
+        Telefono es entero
+        FechaNacimiento es entero
+        Titulacion es cadena no nulo
+            PK (Codigo)
+            FK (Codigo/EMPLEADO(Codigo), Nombre/EMPLEADO(Nombre), Telefono/EMPLEADO(Telefono), FechaNacimiento/EMPLEADO(FechaNacimiento))
+
+    Vendedor (#Codigo, Nombre, Telefono, FechaNacimiento, Comision, ZonaActuacion) siendo
+        Codigo es cadena no nulo
+        Nombre es cadena
+        Telefono es entero
+        FechaNombre es entero
+        Titulacion es cadena no nulo
+            PK (Codigo)
+            FK (Codigo/EMPLEADO(Codigo), Nombre/EMPLEADO(Nombre), Telefono/EMPLEADO(Telefono), FechaNacimiento/EMPLEADO(FechaNacimiento), ZonaActuacion/AGENCIA(ZonaActuacion))       
