@@ -108,105 +108,71 @@ insert into alumno_asignatura values('A131313','160002','4');
 -- EJERCICIOS -- 
 
 -- 1 --
-SELECT nombre,creditos FROM asignatura;
-
+-- MIRARLO
+SELECT titulacion.idtitulacion,asignatura.nombre 
+FROM titulacion,asignatura
+ORDER BY creditos asc;
 -- 2 --
-SELECT DISTINCT creditos FROM asignatura;
-
+SELECT nombre,apellido
+FROM persona,profesor
+WHERE persona.dni = profesor.dni;
 -- 3 --
-SELECT * FROM persona;
-
+SELECT asignatura.nombre
+FROM asignatura,profesor,persona
+WHERE persona.ciudad LIKE 'Sevilla' 
+AND persona.dni = profesor.dni
+AND profesor.idprofesor = asignatura.idprofesor ;
 -- 4 --
-SELECT nombre,creditos FROM asignatura WHERE cuatrimestre=1;
-
+SELECT nombre,apellido
+FROM persona,alumno
+WHERE alumno.dni = persona.dni;
 -- 5 --
-SELECT nombre,apellido FROM persona WHERE fecha_nacimiento < to_date('1975-01-01','YYYY-MM-DD');
-
+SELECT persona.dni,nombre,apellido
+FROM persona,alumno
+WHERE alumno.dni = persona.dni
+AND persona.ciudad LIKE 'Sevilla';
 -- 6 --
-SELECT nombre, costebasico FROM asignatura WHERE creditos > 4.5;
-
+SELECT persona.dni,persona.nombre,apellido
+FROM persona,alumno,alumno_asignatura,asignatura
+WHERE persona.dni = alumno.dni
+AND alumno_asignatura.idasignatura = asignatura.idasignatura 
+AND asignatura.nombre LIKE 'Seguridad Vial';
 -- 7 --
-SELECT nombre FROM asignatura WHERE costebasico BETWEEN 25 AND 35;
-
+SELECT titulacion.idtitulacion
+FROM titulacion,alumno_asignatura,alumno,asignatura
+WHERE alumno.dni LIKE '20202020A'
+AND titulacion.idtitulacion = asignatura.idtitulacion 
+AND asignatura.idasignatura = alumno_asignatura.idasignatura 
+AND alumno_asignatura.idalumno = alumno.idalumno; 
 -- 8 --
-SELECT idalumno FROM alumno,asignatura WHERE asignatura.idasignatura in ('150212','130113');
-
+SELECT asignatura.nombre
+FROM persona,alumno,alumno_asignatura,asignatura
+WHERE persona.nombre LIKE 'Rosa'
+AND persona.apellido LIKE 'Garcia'
+AND persona.dni = alumno.dni
+AND alumno.idalumno = alumno_asignatura.idalumno 
+AND alumno_asignatura.idasignatura = asignatura.idasignatura ;
 -- 9 --
-SELECT nombre FROM asignatura WHERE cuatrimestre = 2 AND creditos != 6;
-
+SELECT alumno.dni
+FROM alumno,persona,profesor, alumno_asignatura
+WHERE persona.nombre LIKE 'Jorge'
+AND persona.apellido LIKE 'Saenz'
+AND persona.dni = profesor.dni
+AND profesor.idprofesor = idprofesor 
+AND idasignatura = alumno_asignatura.idasignatura 
+AND alumno_asignatura.idalumno = alumno.idalumno;
 -- 10 --
-SELECT nombre,apellido FROM persona WHERE apellido LIKE 'G%';
+
+-- NO SE HACERLO POR AHORA
 
 -- 11 --
-SELECT nombre FROM asignatura WHERE idtitulacion IS NULL;
 
 -- 12 --
-SELECT nombre FROM asignatura WHERE idtitulacion IS NOT NULL;
-
 -- 13 --
-SELECT nombre FROM asignatura WHERE costebasico > 8;
-
--- 14 -- 
-SELECT nombre,creditos*10 numeroDeHoras FROM asignatura;
-
+-- 14 --
 -- 15 --
-SELECT * FROM asignatura WHERE cuatrimestre = 2;
-
 -- 16 --
-SELECT nombre FROM persona WHERE varon = 0 AND ciudad LIKE 'Madrid';
-
 -- 17 --
-SELECT nombre,telefono FROM persona WHERE telefono LIKE '91%';
-
--- 18 -- 
-SELECT nombre FROM asignatura WHERE nombre LIKE '%pro%';
---Si la p es mayúscula si sale programación
-
--- 19 -- 
-SELECT nombre FROM asignatura WHERE curso = 1 AND idprofesor = 'P101';
-
--- 20 --  
-SELECT idalumno,idasignatura FROM alumno_asignatura WHERE numeromatricula >= 3;
-
--- 21 -- 
-SELECT nombre,costebasico,costebasico*0.1+costebasico primeraRepeticion,costebasico*0.3+costebasico segundaRepeticion, costebasico*0.6+costebasico terceraRepeticion FROM asignatura;
-
--- 22 --
-SELECT * FROM persona WHERE extract(YEAR FROM fecha_nacimiento) < 1970;
-
--- 23 --
-SELECT DISTINCT persona.dni FROM persona,profesor WHERE persona.dni like profesor.dni; 
-
--- 24 --
-SELECT idalumno FROM alumno_asignatura WHERE idasignatura = 130122;
-
--- 25 --
-SELECT DISTINCT asignatura.idasignatura FROM asignatura,alumno_asignatura WHERE alumno_asignatura.idalumno IS NOT NULL AND alumno_asignatura.idasignatura IS NOT NULL;
-
--- 26 --
-SELECT nombre FROM asignatura 
-WHERE creditos > 4 
-OR cuatrimestre = 1 
-OR curso = 1;
-
--- 27 --
-SELECT DISTINCT idtitulacion 
-FROM asignatura  
-WHERE idtitulacion IS NOT null; 
-
--- 28 --
-SELECT dni 
-FROM persona 
-WHERE apellido LIKE '%g%' 
-OR apellido LIKE '%G%';
-
-SELECT DISTINCT dni
-FROM persona
-WHERE upper(apellido) LIKE '%G%';
-
--- 29 --
-SELECT nombre 
-FROM persona 
-WHERE varon = 1 
-AND EXTRACT(YEAR FROM fecha_nacimiento) > 1970 
-AND ciudad LIKE 'M%'; 
+-- 18 --
+-- 19 --
+-- 20 --
