@@ -108,132 +108,168 @@ insert into alumno_asignatura values('A131313','160002','4');
 -- EJERCICIOS -- 
 
 -- 1 --
-SELECT asignatura.idtitulacion,nombre,costebasico 
-FROM asignatura
-WHERE idtitulacion IS NOT null
-GROUP BY idtitulacion,nombre,costebasico 
-ORDER BY costebasico DESC, nombre ASC
-;
+SELECT count(costebasico)
+FROM asignatura;
+
 -- 2 --
-SELECT nombre,apellido
-FROM persona,profesor
-WHERE persona.dni = profesor.dni;
+SELECT count(asignatura.idasignatura), titulacion.nombre
+FROM titulacion,asignatura
+WHERE titulacion.idtitulacion = asignatura.idtitulacion 
+GROUP BY titulacion.nombre;
+
 -- 3 --
-SELECT asignatura.nombre
-FROM asignatura,profesor,persona
-WHERE persona.ciudad LIKE 'Sevilla' 
-AND persona.dni = profesor.dni
-AND profesor.idprofesor = asignatura.idprofesor ;
+SELECT titulacion.nombre, sum(costebasico) total
+FROM titulacion,asignatura
+WHERE titulacion.idtitulacion = asignatura.idtitulacion 
+GROUP BY titulacion.nombre;
+
 -- 4 --
-SELECT nombre,apellido
-FROM persona,alumno
-WHERE alumno.dni = persona.dni;
+SELECT costebasico + (costebasico*0.07) 
+FROM asignatura,titulacion
+WHERE titulacion.idtitulacion = asignatura.idtitulacion 
+AND titulacion.nombre LIKE 'Mate%'
+GROUP BY costebasico;
+
 -- 5 --
-SELECT persona.dni,nombre,apellido
-FROM persona,alumno
-WHERE alumno.dni = persona.dni
-AND persona.ciudad LIKE 'Sevilla';
+SELECT count(alumno.idalumno) alumnos, asignatura.idasignatura 
+FROM alumno, asignatura, alumno_asignatura
+WHERE alumno.idalumno = alumno_asignatura.idalumno 
+AND alumno_asignatura.idasignatura = asignatura.idasignatura 
+GROUP BY asignatura.idasignatura;
+
 -- 6 --
-SELECT persona.dni,persona.nombre,apellido
+SELECT count(alumno.idalumno) alumnos, asignatura.nombre 
+FROM alumno, asignatura, alumno_asignatura
+WHERE alumno.idalumno = alumno_asignatura.idalumno 
+AND alumno_asignatura.idasignatura = asignatura.idasignatura 
+GROUP BY asignatura.nombre;
+
+-- 7 --
+SELECT persona.nombre, sum(costebasico*(0.1 * alumno_asignatura.numeromatricula) + costebasico)
 FROM persona,alumno,alumno_asignatura,asignatura
-WHERE persona.dni = alumno.dni
+WHERE persona.dni=alumno.dni
 AND alumno.idalumno = alumno_asignatura.idalumno 
 AND alumno_asignatura.idasignatura = asignatura.idasignatura 
-AND asignatura.nombre LIKE 'Seguridad Vial';
--- 7 --
-SELECT DISTINCT titulacion.idtitulacion
-FROM titulacion,alumno_asignatura,alumno,asignatura
-WHERE alumno.dni LIKE '20202020A'
-AND titulacion.idtitulacion = asignatura.idtitulacion 
-AND asignatura.idasignatura = alumno_asignatura.idasignatura 
-AND alumno_asignatura.idalumno = alumno.idalumno; 
+GROUP BY persona.nombre;
+
 -- 8 --
-SELECT asignatura.nombre
-FROM persona,alumno,alumno_asignatura,asignatura
-WHERE persona.nombre LIKE 'Rosa'
-AND persona.apellido LIKE 'Garcia'
-AND persona.dni = alumno.dni
-AND alumno.idalumno = alumno_asignatura.idalumno 
-AND alumno_asignatura.idasignatura = asignatura.idasignatura ;
+SELECT avg(costebasico)
+FROM asignatura,titulacion,alumno_asignatura
+WHERE asignatura.idtitulacion = titulacion.idtitulacion 
+AND costebasico > 60
+AND numeromatricula = 1;
+
 -- 9 --
-SELECT AL.DNI
-FROM asignatura, ALUMNO_ASIGNATURA AA, ALUMNO AL, PROFESOR PR, PERSONA P
-WHERE AL.IDALUMNO = AA.IDALUMNO 
-AND P.DNI = PR.DNI 
-AND PR.IDPROFESOR = asignatura.idprofesor 
-AND asignatura.idasignatura = AA.idasignatura 
-AND P.NOMBRE = 'Jorge' 
-AND P.APELLIDO = 'Saenz';
--- 10 --
-SELECT a2.dni,p3.nombre,p3.apellido
-FROM persona p,profesor p2,asignatura a,alumno_asignatura aa,persona p3,alumno a2
-WHERE p.dni = p2.dni
-AND p2.idprofesor = a.idprofesor 
-AND a.idasignatura = aa.idasignatura 
-AND aa.idalumno = a2.idalumno 
-AND a2.dni = p3.dni
-AND p.nombre LIKE 'Jorge' 
-AND p.apellido LIKE 'Saenz';
+SELECT titulacion.nombre
+FROM titulacion,alumno,asignatura,alumno_asignatura
+WHERE titulacion.idtitulacion = asignatura.idtitulacion 
+AND asignatura.idasignatura = alumno_asignatura.idasignatura 
+AND alumno_asignatura.idalumno = alumno.idalumno 
+GROUP BY titulacion.nombre
+HAVING count(alumno.idalumno)>3;
+
+-- 10 -- 
+SELECT persona.ciudad, count(persona.dni)
+FROM persona
+GROUP BY persona.ciudad;
 
 -- 11 --
-SELECT DISTINCT titulacion.nombre
-FROM titulacion,asignatura
-WHERE creditos>=4
-AND titulacion.idtitulacion = asignatura.idtitulacion;
--- 12 --
-SELECT asignatura.nombre, creditos, titulacion.nombre titulacion
-FROM asignatura,titulacion
-WHERE cuatrimestre=1
-AND asignatura.idtitulacion=titulacion.idtitulacion(+);
--- 13 --
-SELECT asignatura.nombre,costebasico,persona.nombre,persona.apellido
-FROM asignatura,persona,alumno_asignatura,alumno
-WHERE creditos>=4.5
-AND alumno_asignatura.idasignatura = asignatura.idasignatura
-AND alumno.idalumno = alumno_asignatura.idalumno 
-AND persona.dni = alumno.dni;
--- 14 --
-SELECT persona.nombre
-FROM profesor,asignatura,persona
-WHERE persona.dni = profesor.dni
+SELECT persona.nombre, count(asignatura.idasignatura)
+FROM persona,profesor,asignatura
+WHERE persona.dni = profesor.dni 
 AND profesor.idprofesor = asignatura.idprofesor 
-AND asignatura.costebasico BETWEEN 25 AND 35;
+GROUP BY persona.nombre;
+
+-- 12 --
+SELECT persona.nombre, count(alumno.idalumno) alumnos
+FROM persona,profesor,asignatura,alumno,alumno_asignatura
+WHERE persona.dni = profesor.dni 
+AND profesor.idprofesor = asignatura.idprofesor 
+GROUP BY persona.nombre
+HAVING count(alumno.idalumno)>=2;
+
+-- 13 --
+SELECT max(sum(costebasico)/cuatrimestre)
+FROM asignatura
+GROUP BY asignatura.cuatrimestre;
+
+-- 14 --
+SELECT sum(costebasico)
+FROM asignatura;
+
 -- 15 --
-SELECT DISTINCT persona.nombre
-FROM persona,alumno,asignatura,alumno_asignatura
-WHERE alumno_asignatura.idasignatura =150212 
-OR alumno_asignatura.idasignatura = 130113 
-OR (alumno_asignatura.idasignatura = 150212
-AND alumno_asignatura.idasignatura = 130113)
-AND alumno_asignatura.idalumno = alumno.idalumno 
-AND alumno.dni = persona.dni;
+SELECT count(nombre)
+FROM asignatura;
+
 -- 16 --
+SELECT max(costebasico), min(costebasico)
+FROM asignatura;
+
+-- 17 -- 
+SELECT count(creditos),creditos
+FROM asignatura
+GROUP BY creditos;
+
+-- 18 --
+SELECT count(curso)
+FROM asignatura;
+
+-- 19 --
+SELECT count(ciudad)
+FROM persona;
+
+-- 20 -- 
+SELECT nombre,creditos*10 horas
+FROM asignatura;
+
+-- 21 --
 SELECT asignatura.nombre, titulacion.nombre
 FROM asignatura,titulacion
-WHERE cuatrimestre=2
-AND creditos != 6
-AND asignatura.idtitulacion = titulacion.idtitulacion;
--- 17 --
-SELECT DISTINCT asignatura.nombre,creditos*10 horas,alumno.dni
-FROM persona,asignatura,alumno,alumno_asignatura
+WHERE asignatura.idtitulacion IS NULL;
+
+-- 22 --
+SELECT nombre + apellido nombreCompleto , telefono , direccioncalle + direccionnum direccion
+FROM persona;
+
+-- 23 --
+SELECT EXTRACT (DAY FROM fecha_nacimiento) + 1, nombre
+FROM persona;
+
+-- 24 --
+SELECT EXTRACT(YEAR FROM sysdate) - EXTRACT(YEAR FROM fecha_nacimiento),nombre
+FROM persona;
+
+-- 25 --
+SELECT apellido,nombre
+FROM persona
+WHERE (EXTRACT(YEAR FROM sysdate) - EXTRACT(YEAR FROM fecha_nacimiento))>25
+ORDER BY apellido;
+
+-- 26 --
+SELECT persona.nombre,persona.apellido
+FROM persona,alumno,profesor
 WHERE persona.dni = alumno.dni
-AND alumno.idalumno = alumno_asignatura.idalumno 
-AND alumno_asignatura.idasignatura = asignatura.idasignatura;
--- 18 --
-SELECT DISTINCT  persona.nombre
-FROM persona,alumno,alumno_asignatura,asignatura
-WHERE persona.varon=0
-AND persona.ciudad LIKE 'Sevilla'
-AND persona.dni = alumno.dni
-AND alumno_asignatura.idalumno = alumno.idalumno
-;-- 19 --
-SELECT nombre
-FROM asignatura
-WHERE curso=1
-AND lower(idprofesor) like 'p101';
--- 20 --
-SELECT DISTINCT persona.nombre
-FROM alumno_asignatura,alumno,persona
-WHERE alumno_asignatura.idalumno = alumno.idalumno
-AND persona.dni = alumno.dni
-AND numeromatricula >= 3; 
+AND persona.dni = profesor.dni;
+
+-- 27 -- 
+SELECT sum(creditos)
+FROM asignatura,titulacion
+WHERE titulacion.nombre LIKE 'Mate%';
+
+--28--
+SELECT COUNT(asignatura.idasignatura)
+FROM asignatura, titulacion
+WHERE titulacion.nombre ='Matematicas';
+
+--29--
+SELECT asignatura.costebasico, persona.nombre 
+FROM asignatura, alumno, alumno_asignatura, persona
+WHERE asignatura.idasignatura = alumno_asignatura.idasignatura 
+AND alumno_asignatura.idalumno =alumno.idalumno 
+AND persona.dni =alumno.dni ;
+
+--30--
+SELECT COUNT (alumno_asignatura.idalumno)
+FROM asignatura, alumno_asignatura 
+WHERE alumno_asignatura.idasignatura = asignatura.idasignatura 
+GROUP BY asignatura.idasignatura ;
