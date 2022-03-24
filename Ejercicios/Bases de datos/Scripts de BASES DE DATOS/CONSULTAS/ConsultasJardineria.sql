@@ -1068,11 +1068,21 @@ FROM cliente c
 WHERE c.codigo_cliente NOT IN 
 	(SELECT codigo_cliente FROM pago);
 
+SELECT DISTINCT nombre_cliente
+FROM cliente c, pago p
+WHERE c.codigo_cliente = p.codigo_cliente (+)
+AND p.codigo_cliente IS NULL; 
+
 --2	Devuelve un listado que muestre solamente los clientes que no han realizado ningÃºn pedido.
 SELECT DISTINCT nombre_cliente
-FROM cliente c, pedido p 
+FROM cliente c
 WHERE c.codigo_cliente NOT IN 
 	(SELECT codigo_cliente FROM pedido );
+
+SELECT DISTINCT nombre_cliente
+FROM cliente c, pedido p
+WHERE c.codigo_cliente = p.codigo_cliente (+)
+AND p.codigo_cliente IS NULL;
 
 --3	Devuelve un listado que muestre los clientes que no han realizado ningÃºn pago y los que no han realizado ningÃºn pedido.
 SELECT DISTINCT nombre_cliente
@@ -1082,17 +1092,34 @@ WHERE c.codigo_cliente NOT IN
 AND c.codigo_cliente NOT IN 
 	(SELECT codigo_cliente FROM pago);
 
+SELECT DISTINCT nombre_cliente
+FROM cliente c, pedido p, pago pp
+WHERE c.codigo_cliente = pp.codigo_cliente (+)
+AND pp.codigo_cliente IS NULL
+AND c.codigo_cliente = p.codigo_cliente (+)
+AND p.codigo_cliente IS NULL;
+
 --4	Devuelve un listado que muestre solamente los empleados que no tienen una oficina asociada.
 SELECT DISTINCT e.nombre
 FROM empleado e 
 WHERE codigo_oficina NOT IN 
 	(SELECT codigo_oficina FROM oficina);
 
+SELECT DISTINCT e.nombre
+FROM empleado e , oficina o 
+WHERE e.codigo_oficina = o.codigo_oficina (+)
+AND o.codigo_oficina IS NULL;
+
 --5	Devuelve un listado que muestre solamente los empleados que no tienen un cliente asociado.
 SELECT DISTINCT e.nombre
 FROM empleado e 
 WHERE codigo_empleado NOT IN
 	(SELECT cliente.codigo_empleado_rep_ventas FROM cliente);
+
+SELECT DISTINCT e.nombre
+FROM empleado e, cliente c 
+WHERE e.codigo_empleado = c.codigo_empleado_rep_ventas (+)
+AND c.codigo_empleado_rep_ventas IS NULL;
 
 --6	Devuelve un listado que muestre los empleados que no tienen una oficina asociada y los que no tienen un cliente asociado.
 SELECT DISTINCT e.nombre
@@ -1102,23 +1129,36 @@ WHERE codigo_oficina NOT IN
 AND codigo_empleado NOT IN
 	(SELECT cliente.codigo_empleado_rep_ventas FROM cliente);
 
+SELECT DISTINCT e.nombre
+FROM empleado e, oficina o , cliente c 
+WHERE e.codigo_oficina = o.codigo_oficina (+)
+AND o.codigo_oficina IS NULL
+AND e.codigo_empleado = c.codigo_empleado_rep_ventas (+)
+AND c.codigo_empleado_rep_ventas IS null;
+
 --7	Devuelve un listado de los productos que nunca han aparecido en un pedido
 SELECT DISTINCT codigo_producto
 FROM detalle_pedido dp 
 WHERE codigo_pedido NOT IN 
 	(SELECT codigo_pedido FROM pedido);
 
+SELECT DISTINCT dp.codigo_producto
+FROM detalle_pedido dp, pedido p 
+WHERE dp.codigo_pedido = p.codigo_pedido (+)
+AND p.codigo_pedido IS null;
+
 --8	Devuelve las oficinas donde no trabajan ninguno de los empleados que hayan sido los representantes de ventas de algÃºn cliente que haya realizado la compra de algÃºn producto de la gama Frutales.
 SELECT o.codigo_oficina 
-FROM oficina o 
-WHERE o.codigo_oficina NOT IN (SELECT e.codigo_oficina 
-                                FROM empleado e,cliente c,detalle_pedido dp,pedido p,producto p2, gama_producto gp 
-                                WHERE e.codigo_empleado =c.codigo_empleado_rep_ventas 
-                                AND c.codigo_cliente =p.codigo_cliente 
-                                AND p.codigo_pedido =dp.codigo_pedido 
-                                AND dp.codigo_producto =p2.codigo_producto 
-                                AND p2.gama =gp.gama 
-                                AND gp.gama LIKE 'Frutales');
+FROM oficina o, (SELECT DISTINCT e.codigo_empleado, e.codigo_oficina
+				FROM empleado e, cliente c, pedido p, detalle_pedido dp, producto pr
+				WHERE pr.gama = 'Frutales'
+				AND pr.codigo_producto=dp.codigo_producto
+				AND dp.codigo_pedido=p.codigo_pedido
+				AND p.codigo_cliente=c.codigo_cliente
+				AND e.codigo_empleado=c.codigo_empleado_rep_ventas) ef
+WHERE o.codigo_oficina =ef.codigo_oficina(+)
+AND ef.codigo_oficina IS NULL;
+
 
 --9	Devuelve un listado con los clientes que han realizado algÃºn pedido, pero no han realizado ningÃºn pago.
 SELECT DISTINCT nombre_cliente
@@ -1129,11 +1169,11 @@ AND  c.codigo_cliente NOT IN
 	(SELECT codigo_cliente FROM pago);
 
 --10 Devuelve un listado con los datos de los empleados que no tienen clientes asociados y el nombre de su jefe asociado.
-SELECT DISTINCT e.nombre || e.apellido1, codigo_jefe
-FROM empleado e
-WHERE codigo_empleado NOT IN 
-	(SELECT c.codigo_empleado_rep_ventas FROM cliente c)
-
+SELECT DISTINCT e.nombre , e2.nombre jefe
+FROM empleado e,cliente c ,empleado e2 
+WHERE e.codigo_empleado = c.codigo_empleado_rep_ventas (+) 
+AND e.codigo_jefe = e2.codigo_empleado 
+AND c.codigo_empleado_rep_ventas IS null;
 
 -- consultas resumen
 	
