@@ -108,26 +108,81 @@ insert into alumno_asignatura values('A131313','160002','4');
 -- EJERCICIOS -- 
 
 -- 1 --
-
+SELECT aa.idalumno
+FROM alumno_asignatura aa 
+WHERE aa.idasignatura NOT IN ('150212','130113');
 -- 2 --
-
+SELECT nombre
+FROM asignatura a 
+WHERE creditos > 
+(SELECT creditos
+FROM asignatura a2
+WHERE lower(nombre) LIKE 'seguridad vial');
 -- 3 --
-
+SELECT idalumno
+FROM alumno_asignatura aa 
+WHERE idasignatura IN (SELECT idasignatura
+						FROM alumno_asignatura aa2)
+AND idasignatura LIKE '150212'
+AND idasignatura LIKE '130113'; -- 
 -- 4 --
-
+SELECT idalumno
+FROM alumno_asignatura aa 
+WHERE idasignatura LIKE '150212'
+OR idasignatura LIKE '130113'; -- 
 -- 5 --
-
+SELECT nombre
+FROM asignatura a 
+WHERE idtitulacion LIKE '130110'
+AND costebasico > 
+	(SELECT avg(costebasico)
+	FROM asignatura a2
+	WHERE idtitulacion LIKE '130110');
 -- 6 --
-
+SELECT idalumno
+FROM alumno_asignatura aa 
+WHERE idasignatura NOT LIKE '150212'
+AND idasignatura NOT LIKE '130113';
 -- 7 --
-
+SELECT idalumno
+FROM alumno_asignatura aa 
+WHERE idasignatura LIKE '150212'
+AND idasignatura NOT LIKE '130113'; 
 -- 8 --
-
+SELECT nombre 
+FROM asignatura a 
+WHERE creditos > 
+(SELECT creditos
+FROM asignatura a2
+WHERE lower(nombre) LIKE 'seguridad vial');
 -- 9 --
-
+SELECT nombre,apellido
+FROM persona, alumno, profesor
+WHERE persona.dni = alumno.dni 
+AND persona.dni = profesor.dni 
+AND profesor.dni NOT IN 
+	(SELECT dni 
+	FROM profesor p)
+AND alumno.dni NOT IN
+	(SELECT dni
+	FROM alumno a); -- 
 -- 10 --
+SELECT nombre
+FROM asignatura a 
 
+(SELECT max(creditos)
+FROM asignatura a2); -- 
 -- 11 --
-
+SELECT a.nombre
+FROM alumno_asignatura aa, asignatura a 
+WHERE aa.idasignatura = a.idasignatura 
+;-- 
 -- 12 --
-
+SELECT DISTINCT p.ciudad
+FROM persona p, alumno a2 , profesor p2 
+WHERE p.dni in 
+	(SELECT dni
+	FROM profesor p3)
+AND a2.dni in 
+	(SELECT dni
+	FROM alumno a3);
