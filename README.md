@@ -11,6 +11,8 @@
     * Ejercicios de DML
     * Ejercicios de INSERTS
     * Ejercicios de CONSULTAS
+    * Ejercicios de SUBCONSULTAS
+
 4. Además de sus respectivos words y pdf´s.
 
 
