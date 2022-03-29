@@ -166,54 +166,39 @@ COMMIT;
 --Para los siguientes ejemplos usaremos la base de datos: Banco.sql que posee el
 --siguiente diagrama entidad-relación:
 
---1. Mostrar el saldo medio de todas las cuentas de la entidad bancaria con dos decimales y
---la suma de los saldos de todas las cuentas bancarias.
-
-
-SELECT AVG(NVL(saldo,0)) saldo_medio, SUM(saldo) suma_total
+--1
+SELECT trunc(AVG(NVL(saldo,0)),2) saldo_medio, SUM(saldo) suma_total
 FROM cuenta;
 
---2. Mostrar el saldo mínimo, máximo y medio de todas las cuentas bancarias
-
+--2
 SELECT AVG(NVL(saldo,0)) saldo_medio, MAX(saldo) saldo_maximo, MIN(saldo) saldo_minimo
 FROM cuenta;
 
---3. Mostrar la suma de los saldos y el saldo medio de las cuentas bancarias por cada
---código de sucursal.
-
-SELECT SUM(saldo) suma_total, AVG(NVL(saldo,0)) saldo_medio
+--3
+SELECT cod_sucursal ,SUM(saldo) suma_total, AVG(NVL(saldo,0)) saldo_medio
 FROM cuenta
-WHERE cod_sucursal IS NOT NULL;
+WHERE cod_sucursal IS NOT NULL
+GROUP BY cod_sucursal ;
 
---4. Para cada cliente del banco se desea conocer su código, la cantidad total que tiene
---depositada en la entidad y el número de cuentas abiertas.
+--4
+SELECT c2.cod_cliente, COUNT(c2.cod_cuenta)
+FROM cuenta c2   
+GROUP BY c2.cod_cliente;
 
-SELECT c2.cod_cliente  , c2.saldo, COUNT(m.cod_cuenta)
-FROM cuenta c2 , movimiento m  
-WHERE m.cod_cuenta = c2.cod_cuenta 
-GROUP BY c2.cod_cliente, c2.saldo ;
-
---5. Retocar la consulta anterior para que aparezca el nombre y apellidos de cada cliente en
---vez de su código de cliente.
-
-
+--5
 SELECT c.nombre ,c.apellidos, c2.saldo, COUNT(m.cod_cuenta)
 FROM cuenta c2 , movimiento m , cliente c 
 WHERE m.cod_cuenta = c2.cod_cuenta 
 AND c2.cod_cliente =c.cod_cliente
 GROUP BY c.nombre ,c.apellidos, c2.saldo;
 
---6. Para cada sucursal del banco se desea conocer su dirección, el número de cuentas que
---tiene abiertas y la suma total que hay en ellas
-
+--6
 SELECT s.direccion, COUNT(c.cod_cuenta), SUM(c.saldo)  
 FROM sucursal s, cuenta c 
 WHERE s.cod_sucursal = c.cod_sucursal 
 GROUP BY s.direccion;
 
---7. Mostrar el saldo medio y el interés medio de las cuentas a las que se le aplique un
---interés mayor del 10%, de las sucursales 1 y 2.
-
+--7
 SELECT AVG(NVL(c.saldo,0)) saldo_medio, AVG(NVL(c.interes ,0)) interes_medio
 FROM sucursal s , cuenta c 
 WHERE s.cod_sucursal = c.cod_sucursal
@@ -221,18 +206,13 @@ AND c.interes >0.10
 AND (c.cod_sucursal = 1) 
 OR (c.cod_sucursal =2);
 
---8. Mostrar los tipos de movimientos de las cuentas bancarias, sus descripciones y el
---volumen total de dinero que se manejado en cada tipo de movimiento
-
+--8
 SELECT tm.cod_tipo_movimiento , tm.descripcion , SUM(m.importe) dinero_total
 FROM tipo_movimiento tm , movimiento m 
 WHERE tm.cod_tipo_movimiento = m.cod_tipo_movimiento
 GROUP BY tm.cod_tipo_movimiento , tm.descripcion;
 
---9 Mostrar cuál es la cantidad media que los clientes de nuestro banco tienen en el
---epígrafe “Retirada por cajero automático”.
-
-
+--9
 SELECT c.cod_cliente , AVG(NVL(m.importe,0)), tm.descripcion 
 FROM cuenta c , movimiento m , tipo_movimiento tm 
 WHERE c.cod_cuenta = m.cod_cuenta 
@@ -241,9 +221,7 @@ AND tm.cod_tipo_movimiento  LIKE 'RC'
 GROUP BY c.cod_cliente, tm.descripcion;
 
 
---10 Calcular la cantidad total de dinero que emite la entidad bancaria clasificada según los
---tipos de movimientos de salida.
-
+--10
 SELECT c.cod_sucursal numero_de_sucursal , SUM(m.importe) suma_total_dinero_emitido, tm.salida 
 FROM cuenta c , movimiento m , tipo_movimiento tm 
 WHERE c.cod_cuenta = m.cod_cuenta 
@@ -252,52 +230,39 @@ AND tm.salida = 'SI'
 GROUP BY c.cod_sucursal, tm.salida;
 
 
---11 Calcular la cantidad total de dinero que ingresa cada cuenta bancaria clasificada según
---los tipos de movimientos de entrada mostrando además la descripción del tipo de
---movimiento.
-
-SELECT c.cod_sucursal numero_de_sucursal , SUM(m.importe) suma_total_dinero_ingreso, tm.salida, tm.descripcion 
+-- 11
+SELECT c.cod_sucursal numero_de_sucursal , SUM(m.importe) suma_total_dinero_ingreso
 FROM cuenta c , movimiento m , tipo_movimiento tm 
 WHERE c.cod_cuenta = m.cod_cuenta 
 AND m.cod_tipo_movimiento = tm.cod_tipo_movimiento 
 AND tm.salida = 'No'
-GROUP BY c.cod_sucursal, tm.salida, tm.descripcion ;
+GROUP BY c.cod_sucursal;
 
---12 Calcular la cantidad total de dinero que sale de la sucursal de Paseo Castellana
-
-SELECT SUM(m.importe) dinero_total_de_salida
-FROM movimiento m , cuenta c, tipo_movimiento tm 
+--12 --
+SELECT SUM(m.importe) total_de_salida
+FROM movimiento m , cuenta c, tipo_movimiento tm, sucursal s 
 WHERE m.cod_cuenta = c.cod_cuenta 
 AND tm.cod_tipo_movimiento = m.cod_tipo_movimiento 
+AND s.cod_sucursal = c.cod_sucursal 
 AND tm.salida ='SI'
-AND c.cod_sucursal = (SELECT s.cod_sucursal 
-					  FROM sucursal s 
-					  WHERE s.direccion LIKE '%Paseo Castellana%');
+AND s.direccion LIKE '%Paseo Castellana%';
 
 
---13 Mostrar la suma total por tipo de movimiento de las cuentas bancarias de los clientes
---del banco. Se deben mostrar los siguientes campos: apellidos, nombre, cod_cuenta,
---descripción del tipo movimiento y el total acumulado de los movimientos de un
---mismo tipo.
-					 
+--13				 
 SELECT DISTINCT c.nombre , c.apellidos , m.cod_cuenta , tm.descripcion , SUM(m.importe) suma_del_importe
 FROM cliente c,cuenta c2 , movimiento m, tipo_movimiento tm 
 WHERE c.cod_cliente = c2.cod_cliente  
 AND c2.cod_cuenta = m.cod_cuenta 
 AND m.cod_tipo_movimiento = tm.cod_tipo_movimiento 
-GROUP BY c.nombre , c.apellidos , m.cod_cuenta , tm.descripcion
-ORDER BY c.nombre ;
+GROUP BY c.nombre , c.apellidos , m.cod_cuenta , tm.descripcion;
 
---14. Contar el número de cuentas bancarias que no tienen asociados movimientos.
-
+--14
 SELECT COUNT(m.cod_cuenta) 
 FROM movimiento m 
 WHERE m.cod_tipo_movimiento IS NULL 
 OR m.num_mov_mes IS NULL;
 
---15 Por cada cliente, contar el número de cuentas bancarias que posee sin movimientos. Se
---deben mostrar los siguientes campos: cod_cliente, num_cuentas_sin_movimiento.
-
+--15 
 SELECT c2.cod_cliente, COUNT(m.cod_cuenta) cuentas_sin_movimientos
 FROM  cuenta c2 ,movimiento m 
 WHERE c2.cod_cuenta = m.cod_cuenta 
@@ -305,27 +270,20 @@ AND m.num_mov_mes  IS NULL
 OR m.num_mov_mes  =0
 GROUP BY c2.cod_cliente;
 
---16  Mostrar el código de cliente, la suma total del dinero de todas sus cuentas y el número
---de cuentas abiertas, sólo para aquellos clientes cuyo capital supere los 35.000 euros.
-
+--16  
 SELECT c.cod_cliente , SUM(c.saldo) dinero_cuenta, COUNT(c.cod_cuenta) numero_cuentas
 FROM cuenta c 
 WHERE c.saldo >35000
 GROUP BY c.cod_cliente;
 
---17 Mostrar los apellidos, el nombre y el número de cuentas abiertas sólo de aquellos
---clientes que tengan más de 2 cuentas.
-
+--17 
 SELECT c.nombre, COUNT(c2.cod_cuenta)
 FROM cliente c , cuenta c2 
 WHERE c.cod_cliente = c2.cod_cliente
 HAVING COUNT(c2.cod_cuenta)>2
 GROUP BY c.nombre , c.nombre;
 
---18 Mostrar el código de sucursal, dirección, capital del año anterior y la suma de los
---saldos de sus cuentas, sólo de aquellas sucursales cuya suma de los saldos de las
---cuentas supera el capital del año anterior ordenadas por sucursal.
-
+--18 
 SELECT s.cod_sucursal , s.direccion , s.capital_anio_anterior, SUM(c.saldo) suma_saldo_cuentas_sucursal
 FROM sucursal s, cuenta c 
 WHERE s.cod_sucursal = c.cod_sucursal 
@@ -333,10 +291,7 @@ HAVING SUM(c.saldo) > s.capital_anio_anterior
 GROUP BY s.cod_sucursal , s.direccion , s.capital_anio_anterior
 ORDER BY s.cod_sucursal ;
 
---19 Mostrar el código de cuenta, su saldo, la descripción del tipo de movimiento y la suma
---total de dinero por movimiento, sólo para aquellas cuentas cuya suma total de dinero
---por movimiento supere el 20% del saldo.
-
+--19
 SELECT DISTINCT c.cod_cuenta, c.saldo , tm.descripcion , SUM(m.importe*m.num_mov_mes) total_dinero_por_movimiento
 FROM cuenta c , movimiento m , tipo_movimiento tm 
 WHERE c.cod_cuenta = m.cod_cuenta 
@@ -344,10 +299,7 @@ AND m.cod_tipo_movimiento = tm.cod_tipo_movimiento
 GROUP BY c.cod_cuenta , c.saldo , tm.descripcion
 HAVING SUM(m.importe*m.num_mov_mes)>(c.saldo*0.20);
 
---20 Mostrar los mismos campos del ejercicio anterior pero ahora sólo de aquellas cuentas
---cuya suma de importes por movimiento supere el 10% del saldo y no sean de la
---sucursal 4.
-
+--20
 SELECT c.cod_cuenta , c.saldo , tm.descripcion , SUM(m.importe*m.num_mov_mes) total_dinero_por_movimiento
 FROM cuenta c , movimiento m , tipo_movimiento tm 
 WHERE c.cod_cuenta = m.cod_cuenta 
@@ -357,9 +309,7 @@ GROUP BY c.cod_cuenta , c.saldo , tm.descripcion
 HAVING SUM(m.importe*m.num_mov_mes)>(c.saldo*0.10);
 
 
---21 Mostrar los datos de aquellos clientes para los que el saldo de sus cuentas suponga al
---menos el 20% del capital del año anterior de su sucursal
-
+--21 
 SELECT DISTINCT c.cod_cliente , c.apellidos , c.nombre , c.direccion 
 FROM cliente c , cuenta c2 , sucursal s 
 WHERE c.cod_cliente = c2.cod_cliente

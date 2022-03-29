@@ -1229,50 +1229,57 @@ FROM cliente c
 WHERE c.codigo_empleado_rep_ventas NOT IN (SELECT e.codigo_empleado 
                               				 FROM empleado e);
 
+SELECT count(c.codigo_cliente)
+FROM cliente c, empleado e 
+WHERE c.codigo_empleado_rep_ventas (+) = e.codigo_empleado 
+AND c.codigo_empleado_rep_ventas IS NULL;
+                              				
 -- Ejercicio 11:
-SELECT min(p.fecha_pago), max(p.fecha_pago) 
+SELECT c.nombre_cliente ,min(p.fecha_pago), max(p.fecha_pago) 
 FROM pago p,cliente c 
-WHERE p.codigo_cliente =c.codigo_cliente ;
+WHERE p.codigo_cliente =c.codigo_cliente 
+GROUP BY c.nombre_cliente ;
 
 -- Ejercicio 12:
-SELECT COUNT(DISTINCT c.codigo_empleado_rep_ventas)
-FROM cliente c, empleado e
-WHERE e.codigo_empleado NOT IN 
-            (SELECT c.codigo_empleado_rep_ventas 
-             FROM cliente c);
+SELECT p.nombre ,COUNT(DISTINCT c.codigo_empleado_rep_ventas)
+FROM detalle_pedido dp, producto p , pedido p2, cliente c 
+WHERE p.codigo_producto = dp.codigo_producto 
+AND dp.codigo_pedido = p2.codigo_pedido
+AND c.codigo_cliente = p2.codigo_cliente 
+GROUP BY p.nombre ;
 
 -- Ejercicio 13:
-SELECT sum(p.cantidad_en_stock)
-FROM producto p,pedido p2,detalle_pedido dp 
-WHERE p.codigo_producto =dp.codigo_producto 
-AND dp.codigo_pedido =p2.codigo_pedido ;
+SELECT sum(dp.cantidad)
+FROM detalle_pedido dp;
 
 -- Ejercicio 14:
-SELECT dp.codigo_producto , dp.cantidad 
-FROM detalle_pedido dp 
-ORDER BY dp.cantidad DESC;	
+SELECT dk.codigo_producto
+FROM 	(SELECT dp.codigo_producto , sum(dp.cantidad) total
+		FROM detalle_pedido dp 
+		GROUP BY dp.codigo_producto 
+		ORDER BY sum(dp.cantidad) DESC) dk
+WHERE rownum <= 20;	
 
---15	La facturaciÃ³n que ha tenido la empresa en toda la historia, indicando la base imponible, el IVA y el total facturado. 
---La base imponible se calcula sumando el coste del producto por el nÃºmero de unidades vendidas de la tabla detalle_pedido. 
---El IVA es el 21 % de la base imponible, y el total la suma de los dos campos anteriores.
-SELECT sum(dp.cantidad) facturacion, dp.precio_unidad*cantidad base_imponible, '21%' iva, sum(dp.cantidad)+dp.precio_unidad*cantidad total_facturado
-FROM detalle_pedido dp 
-GROUP BY dp.precio_unidad*cantidad;
+-- Ejercicio 15	
+SELECT sum(dp.precio_unidad*cantidad) base_imponible,sum(dp.precio_unidad*cantidad)*0.21 iva, sum(dp.precio_unidad*cantidad)+sum(dp.precio_unidad*cantidad)*0.21 total_facturado
+FROM detalle_pedido dp;
 	
---16	La misma informaciÃ³n que en la pregunta anterior, pero agrupada por cÃ³digo de producto.
-SELECT sum(dp.cantidad) facturacion, dp.precio_unidad*cantidad base_imponible, '21%' iva, sum(dp.cantidad)+dp.precio_unidad*cantidad total_facturado
-FROM detalle_pedido dp 
-GROUP BY dp.precio_unidad*cantidad,codigo_producto;
+--Ejercicio 16	
+SELECT sum(dp.precio_unidad*cantidad) base_imponible,sum(dp.precio_unidad*cantidad)*0.21 iva, sum(dp.precio_unidad*cantidad)+sum(dp.precio_unidad*cantidad)*0.21 total_facturado
+FROM detalle_pedido dp
+GROUP BY dp.codigo_producto ;
 	
---17	La misma informaciÃ³n que en la pregunta anterior, pero agrupada por cÃ³digo de producto filtrada por los cÃ³digos que empiecen por OR.
-SELECT sum(dp.cantidad) facturacion, dp.precio_unidad*cantidad base_imponible, '21%' iva, sum(dp.cantidad)+dp.precio_unidad*cantidad total_facturado
-FROM detalle_pedido dp 
+-- Ejercicio 17	
+SELECT sum(dp.precio_unidad*cantidad) base_imponible,sum(dp.precio_unidad*cantidad)*0.21 iva, sum(dp.precio_unidad*cantidad)+sum(dp.precio_unidad*cantidad)*0.21 total_facturado
+FROM detalle_pedido dp
 WHERE codigo_producto LIKE 'OR%'
 GROUP BY dp.precio_unidad*cantidad,codigo_producto;
 	
---18	Lista las ventas totales de los productos que hayan facturado mÃ¡s de 3000 euros. 
--- Se mostrarÃ¡ el nombre, unidades vendidas, total facturado y total facturado con impuestos (21% IVA).
-SELECT pr.nombre, p.total,sum(dp.cantidad)+dp.precio_unidad*cantidad total_facturado, (sum(dp.cantidad)+dp.precio_unidad*cantidad)*21/100 total_facturado
+-- Ejercicio 18	
+SELECT DISTINCT pr.nombre, p.total, 
+	sum(dp.precio_unidad*cantidad) base_imponible,
+	sum(dp.precio_unidad*cantidad)*0.21 iva, 
+	sum(dp.precio_unidad*cantidad)+sum(dp.precio_unidad*cantidad)*0.21 total_facturado
 FROM pago p, producto pr, detalle_pedido dp, pedido p2, cliente c
 WHERE p.codigo_cliente = c.codigo_cliente 
 AND c.codigo_cliente = p2.codigo_cliente
@@ -1280,23 +1287,58 @@ AND dp.codigo_producto = pr.codigo_producto
 GROUP BY pr.nombre,p.total,dp.precio_unidad*cantidad
 HAVING sum(dp.cantidad)+dp.precio_unidad*cantidad > 3000;
 
+
+
 --Consultas variadas
 --1	Devuelve el listado de clientes indicando el nombre del cliente y cuÃ¡ntos pedidos ha realizado. Tenga en cuenta que pueden existir clientes que no han realizado ningÃºn pedido.
-
+SELECT c.nombre_cliente , count(nvl(p.codigo_pedido,0))
+FROM cliente c, pedido p 
+WHERE c.codigo_cliente = p.codigo_cliente (+)
+GROUP BY c.nombre_cliente ;
 	
 --2	Devuelve un listado con los nombres de los clientes y el total pagado por cada uno de ellos. Tenga en cuenta que pueden existir clientes que no han realizado ningÃºn pago.
-
+SELECT c.nombre_cliente, count(nvl(p.total,0))
+FROM cliente c , pago p 
+WHERE c.codigo_cliente = p.codigo_cliente (+)
+GROUP BY c.nombre_cliente ;
 	
 --3	Devuelve el nombre de los clientes que hayan hecho pedidos en 2008 ordenados alfabÃ©ticamente de menor a mayor.
-
+SELECT c.nombre_cliente
+FROM cliente c , pedido p 
+WHERE p.codigo_cliente = c.codigo_cliente 
+AND extract(YEAR FROM p.fecha_pedido) = 2008
+ORDER BY c.nombre_cliente asc;
 	
 --4	Devuelve el nombre del cliente, el nombre y primer apellido de su representante de ventas y el nÃºmero de telÃ©fono de la oficina del representante de ventas, de aquellos clientes que no hayan realizado ningÃºn pago.
+SELECT DISTINCT c.nombre_cliente, e.nombre ||' '|| e.apellido1 nombre_representante ,o.telefono 
+FROM cliente c , empleado e , oficina o, pago p 
+WHERE c.codigo_empleado_rep_ventas = e.codigo_empleado 
+AND e.codigo_oficina = o.codigo_oficina 
+AND p.codigo_cliente (+) = c.codigo_cliente 
+AND p.codigo_cliente IS null;
 
-	
 --5	Devuelve el listado de clientes donde aparezca el nombre del cliente, el nombre y primer apellido de su representante de ventas y la ciudad donde estaÌ� su oficina.
+SELECT DISTINCT c.nombre_cliente, e.nombre ||' '|| e.apellido1 ,upper(o.ciudad) 
+FROM cliente c , empleado e, oficina o 
+WHERE c.codigo_empleado_rep_ventas = e.codigo_empleado 
+AND e.codigo_oficina = o.codigo_oficina ;
 
-	
 --6	Devuelve el nombre, apellidos, puesto y telÃ©fono de la oficina de aquellos empleados que no sean representante de ventas de ningÃºn cliente.
-
+SELECT e.nombre, e.puesto, o.telefono 
+FROM cliente c , empleado e, oficina o 
+WHERE c.codigo_empleado_rep_ventas (+) = e.codigo_empleado 
+AND e.codigo_oficina = o.codigo_oficina 
+AND c.codigo_empleado_rep_ventas IS null;
 	
 --7	Devuelve un listado indicando todas las ciudades donde hay oficinas y el nÃºmero de empleados que tiene.
+SELECT o.ciudad , count(e.codigo_empleado) 
+FROM oficina o,empleado e 
+WHERE e.codigo_oficina = o.codigo_oficina 
+GROUP BY o.ciudad ;
+
+-- 8 
+SELECT o.ciudad , count(e.codigo_empleado) 
+FROM oficina o,empleado e 
+WHERE e.codigo_oficina = o.codigo_oficina (+)
+AND o.codigo_oficina IS null
+GROUP BY o.ciudad ;
