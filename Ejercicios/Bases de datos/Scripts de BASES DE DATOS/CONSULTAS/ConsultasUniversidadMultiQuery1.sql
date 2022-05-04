@@ -121,9 +121,7 @@ WHERE lower(nombre) LIKE 'seguridad vial');
 -- 3 --
 SELECT idalumno
 FROM alumno_asignatura aa 
-WHERE idasignatura IN (SELECT idasignatura
-						FROM alumno_asignatura aa2)
-AND idasignatura LIKE '150212'
+WHERE idasignatura LIKE '150212'
 AND idasignatura LIKE '130113'; -- 
 -- 4 --
 SELECT idalumno
@@ -135,9 +133,8 @@ SELECT nombre
 FROM asignatura a 
 WHERE idtitulacion LIKE '130110'
 AND costebasico > 
-	(SELECT avg(costebasico)
-	FROM asignatura a2
-	WHERE idtitulacion LIKE '130110');
+	(SELECT avg(nvl(costebasico,0))
+	FROM asignatura a2);
 -- 6 --
 SELECT idalumno
 FROM alumno_asignatura aa 
@@ -157,32 +154,30 @@ FROM asignatura a2
 WHERE lower(nombre) LIKE 'seguridad vial');
 -- 9 --
 SELECT nombre,apellido
-FROM persona, alumno, profesor
-WHERE persona.dni = alumno.dni 
-AND persona.dni = profesor.dni 
-AND profesor.dni NOT IN 
-	(SELECT dni 
-	FROM profesor p)
-AND alumno.dni NOT IN
-	(SELECT dni
-	FROM alumno a); -- 
+FROM persona
+WHERE dni NOT IN 
+		(SELECT dni 
+		FROM profesor p)
+AND dni NOT IN
+		(SELECT dni
+		FROM alumno a); -- 
 -- 10 --
-SELECT nombre
-FROM asignatura a 
-
-(SELECT max(creditos)
-FROM asignatura a2); -- 
+SELECT nombre 
+FROM	(SELECT nombre
+		FROM asignatura a 
+		ORDER BY creditos DESC) pk
+WHERE rownum <20;
 -- 11 --
 SELECT a.nombre
 FROM alumno_asignatura aa, asignatura a 
-WHERE aa.idasignatura = a.idasignatura 
-;-- 
+WHERE aa.idasignatura(+) = a.idasignatura
+AND aa.idasignatura IS null; 
 -- 12 --
-SELECT DISTINCT p.ciudad
-FROM persona p, alumno a2 , profesor p2 
-WHERE p.dni in 
+SELECT DISTINCT ciudad
+FROM persona 
+WHERE dni in 
 	(SELECT dni
-	FROM profesor p3)
-AND a2.dni in 
+	FROM profesor)
+AND dni in 
 	(SELECT dni
-	FROM alumno a3);
+	FROM alumno);

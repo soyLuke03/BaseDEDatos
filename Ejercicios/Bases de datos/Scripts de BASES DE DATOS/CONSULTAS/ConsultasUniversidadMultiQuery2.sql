@@ -1373,10 +1373,11 @@ FROM facturas
 WHERE iva not in (SELECT iva FROM facturas
 WHERE iva = 16);
 -- 3 --
-SELECT count(codcli)
+SELECT codcli, iva
 FROM facturas
-WHERE iva in (SELECT iva FROM facturas
-WHERE iva = 16);   --
+WHERE codcli NOT IN ( SELECT codcli FROM facturas WHERE iva != 16)
+AND iva IS NOT NULL
+GROUP BY codcli,iva;
 -- 4 --
 SELECT f.fecha
 FROM lineas_fac lf , facturas f 
@@ -1385,40 +1386,76 @@ AND precio = (SELECT max(precio) FROM lineas_fac);
 -- 5 --
 SELECT count(codpue)
 FROM clientes 
-WHERE codcli NOT IN (SELECT codpue FROM clientes);
+WHERE codcli NOT IN (SELECT codpue FROM pueblos);
 -- 6 --
-SELECT count(articulos.codart)
-FROM articulos,facturas,lineas_fac lf 
-WHERE articulos.codart = lf.codart 
-AND lf.codfac = facturas.codfac 
-AND stock > 20
-AND articulos.precio > 15;
+SELECT count(a.CODART)
+FROM LINEAS_FAC lf ,ARTICULOS a 
+WHERE lf.CODART =a.CODART 
+AND a.STOCK >20 AND lf.PRECIO >15
+AND CODFAC NOT IN (SELECT CODFAC 
+					FROM FACTURAS f 
+					WHERE EXTRACT(MONTH FROM fecha) BETWEEN 10 AND 12 
+					AND EXTRACT(YEAR FROM fecha)=EXTRACT(YEAR FROM sysdate)-1);
 -- 7 --
 SELECT count(codcli)
-FROM facturas, (SELECT iva FROM facturas
-				WHERE iva >0)
-WHERE add_months(fecha,-12) = fecha 
-;  --
+FROM facturas c 
+WHERE c.codcli NOT IN (SELECT f.codcli
+					FROM facturas f
+					WHERE EXTRACT(YEAR FROM f.fecha) = EXTRACT(YEAR FROM sysdate )-1
+					AND (f.iva = 0
+					OR f.iva IS NULL))
+AND EXTRACT(YEAR FROM c.fecha)=EXTRACT(YEAR FROM sysdate)-1;
+
 -- 8 --
- 
+SELECT c.codcli,c.nombre
+FROM clientes c , facturas f 
+WHERE c.codcli = f.codcli 
+AND EXTRACT (YEAR FROM f.fecha)  = EXTRACT (YEAR FROM sysdate)-1 
+AND EXTRACT (MONTH FROM f.fecha) IN (11,12)
+AND f.codfac IN (SELECT lf.codfac
+				FROM lineas_fac lf
+				WHERE lf.cant + lf.precio > 60.5);
 -- 9 --
-
+SELECT *
+FROM (SELECT a.codart, a.descrip, a.precio 
+	  FROM articulos a 
+	  ORDER BY precio DESC)
+WHERE rownum <= 10;
 -- 10 --
-SELECT p.nombre 
-FROM provincias p, pueblos p2 , clientes c 
-WHERE p.codpro = p2.codpro 
-AND p2.codpue = c.codpue 
-AND c.codcli = (SELECT max(codcli) FROM clientes);
+SELECT p.nombre
+FROM   (SELECT p2.nombre, count(c.codcli)
+		FROM clientes c , provincias p2, pueblos pu2
+		WHERE p2.codpro = pu2.codpro 
+		AND pu2.codpue = c.codpue 
+		GROUP BY p2.nombre
+		ORDER BY count(c.codcli) DESC) p;
 -- 11 -- 
-
+SELECT a.codart, a.descrip
+FROM articulos a, lineas_fac lf, facturas f 
+WHERE a.codart = lf.codart 
+AND lf.codfac = f.codfac 
+AND a.precio > 90.15
+AND extract(YEAR FROM f.fecha) = (EXTRACT(YEAR FROM sysdate)-1)
+AND a.codart IN (SELECT codart
+				FROM lineas_fac
+				GROUP BY codart
+				HAVING sum(nvl(cant,0))<10);
 -- 12 --
-
+SELECT a.codart, a.descrip 
+FROM articulos a 
+WHERE a.precio > (SELECT min(precio)*3000
+				 FROM articulos) ;
 -- 13 --
 SELECT c.nombre
 FROM clientes c, facturas f ,lineas_fac lf 
 WHERE c.codcli = f.codcli 
 AND f.codfac = lf.codfac 
-AND lf.precio = (SELECT max(precio) FROM lineas_fac);
+AND f.codfac = (SELECT codfac
+				FROM lineas_fac
+				GROUP BY codfac
+				HAVING sum(precio*cant)) = (SELECT max(sum(precio*cant)
+											FROM lineas_fac
+											GROUP BY precio);
 -- 14 --
 SELECT a.codart,a.descrip
 FROM articulos a, lineas_fac lf, facturas f 
@@ -1427,6 +1464,17 @@ AND lf.codfac = f.codfac
 AND a.precio > (SELECT nvl(avg(precio),0) FROM articulos)
 GROUP BY a.codart, a.descrip 
 HAVING count(codcli) > 5 
-; --
+; 
+
+SELECT distinct ARTICULOS.codart, ARTICULOS.descrip
+FROM ARTICULOS, LINEAS_FAC
+WHERE ARTICULOS.codart = LINEAS_FAC.codart
+AND LINEAS_FAC.codart IN (SELECT LINEAS_FAC.codart 
+						    FROM LINEAS_FAC, FACTURAS
+						    WHERE LINEAS_FAC.CODFAC = FACTURAS.CODFAC
+						    GROUP BY LINEAS_FAC.codart
+						    HAVING COUNT(distinct FACTURAS.CODCLI) > 5)
+							AND ARTICULOS.PRECIO > (SELECT avg(PRECIO)
+						    							FROM ARTICULOS);
 
 
