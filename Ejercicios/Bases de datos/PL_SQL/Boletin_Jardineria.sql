@@ -1165,6 +1165,43 @@ END;
 BEGIN 
 	nueve('Herramientas');
 END;
+
+
+
+----------------------------
+CREATE OR REPLACE FUNCTION mostrarelpedido(codigo varchar2)
+RETURN NUMBER 
+AS
+	CURSOR eliminar (codigo varchar2) IS
+	SELECT *
+	FROM pedido p
+	WHERE codigo = p.codigo_cliente;
+
+	CURSOR borrarHijos (codigo varchar2) IS
+	SELECT * 
+	FROM detalle_pedido dp
+	WHERE codigo_pedido IN (SELECT dp2.codigo_pedido
+						    FROM detalle_pedido dp2, pedido p
+						    WHERE dp.codigo_pedido = p.codigo_pedido
+						    AND p.codigo_cliente = codigo);
+BEGIN 
+	FOR registro IN eliminar(codigo)
+	LOOP
+		dbms_output.put_line('Codigo: '||registro.codigo_pedido
+							|| ' Fecha: '|| registro.estado
+							|| ' Estado: '|| registro.comentarios || chr(13));
+	
+	FOR registro2 IN borrarHijos(registro.codigo_pedido)
+		LOOP
+		dbms_output.put_line('   	Codigo producto: '||registro2.codigo_producto||' Fecha: '||registro2.cantidad||
+							' Estado: '|| registro2.precio_unidad||chr(13));
+	END LOOP;
+END LOOP;
+END;
+
+SELECT mostrarelpedido('1') FROM dual;
+
+----------------------------
 --10.- Diseñar una aplicación que simule un listado de empleados según el
 --siguiente formato:
 --************************************************************
@@ -1182,4 +1219,49 @@ END;
 --? (7) Nº de pedidos realizados por el cliente
 --IMPORTANTE: (5), (6) y (7) debe aparecer para cada cliente
 --representado por el empleado.
+CREATE OR REPLACE PROCEDURE aplicacion
+AS
+CURSOR C_empleado IS
+	SELECT e.nombre,e.apellido1,e.apellido2,e.puesto,o.codigo_oficina, o.ciudad, e.codigo_empleado
+	FROM empleado e, oficina o
+	WHERE e.codigo_oficina = o.codigo_oficina ;
 
+CURSOR C_cliente (emp_representante number) IS
+	SELECT count(c.codigo_empleado_rep_ventas) AS n_reps, c.codigo_cliente, c.nombre_cliente,count(p.total) AS pagos, count(p2.codigo_cliente) AS pedidos
+	FROM cliente c, pago p, pedido p2
+	WHERE c.codigo_cliente = p.codigo_cliente 
+	AND c.codigo_empleado_rep_ventas = emp_representante
+	AND p.codigo_cliente(+) =p2.codigo_cliente 
+	GROUP BY c.codigo_cliente, c.nombre_cliente;
+
+BEGIN 
+	
+	FOR registro IN C_empleado loop
+			dbms_output.put_line('Nombre y Apellidos del empleado'||chr(13)
+								|| registro.nombre || ' ' || registro.apellido1 || ' ' || registro.apellido2 ||chr(13)
+								|| 'Codigo y ciudad de la oficina '||chr(13)
+								|| registro.codigo_oficina || ' ' || registro.ciudad || chr(13)
+								|| 'Puesto del empleado' ||chr(13)
+								|| registro.puesto|| chr(13));
+		FOR registro2 IN C_cliente (registro.codigo_empleado) LOOP
+		
+			dbms_output.put_line('Nº Clientes representados'||chr(13)
+								|| registro2.n_reps ||chr(13) 
+								|| 'Codigo y nombre del cliente'||chr(13)
+								|| registro2.nombre_cliente || ' ' ||registro2.codigo_cliente||chr(13)
+								|| 'Suma de los pagos: '||chr(13)
+								|| registro2.pagos  || chr(13)
+								|| 'Nº pedidos: ' ||chr(13)
+								|| registro2.pedidos );
+					
+		END LOOP;
+		dbms_output.put_line(chr(13));
+	END LOOP;
+END;
+
+BEGIN
+	aplicacion;
+END;
+	
+	
+	
